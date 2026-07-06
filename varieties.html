@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Blueberry Variety Should I Plant?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root {
+    --paper: #EDE9DE;
+    --paper-raised: #F6F3EA;
+    --ink: #241B3A;
+    --ink-soft: #4A4160;
+    --mustard: #C68E17;
+    --sage: #6B7A5E;
+    --pass: #3F6B3F;
+    --pass-bg: #E4EDE0;
+    --fail: #A03232;
+    --fail-bg: #F3E1DF;
+    --rule: #C9C2AE;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', serif;
+    line-height: 1.55;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  header.top {
+    border-bottom: 3px solid var(--ink);
+    padding: 18px 24px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  header.top .site-name {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  header.top .back-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  header.top .back-link:hover { color: var(--mustard); border-color: var(--mustard); }
+
+  .hero {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 56px 24px 32px;
+    text-align: center;
+  }
+  .hero .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--mustard);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0 0 20px;
+  }
+  .hero p.thesis {
+    font-size: 1.1rem;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  section.block {
+    max-width: 880px;
+    margin: 48px auto;
+    padding: 0 24px;
+  }
+  section.block h2 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  section.block > p.sub {
+    text-align: center;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 30px;
+  }
+
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+  }
+  .rule-tag {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-left: 5px solid var(--mustard);
+    border-radius: 4px;
+    padding: 20px;
+  }
+  .rule-tag .tag-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--mustard);
+    margin-bottom: 8px;
+  }
+  .rule-tag h3 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.05rem;
+    margin: 0 0 10px;
+  }
+  .rule-tag .figure {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .rule-tag p { font-size: 0.92rem; color: var(--ink-soft); margin: 0; }
+
+  .honest-note {
+    max-width: 880px;
+    margin: 32px auto 0;
+    padding: 22px 24px;
+    background: var(--paper-raised);
+    border: 1px dashed var(--sage);
+    border-radius: 6px;
+  }
+  .honest-note .tag-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sage);
+    margin-bottom: 10px;
+  }
+  .honest-note p { margin: 0 0 10px; color: var(--ink-soft); font-size: 0.95rem; }
+  .honest-note p:last-child { margin-bottom: 0; }
+  .honest-note ul { margin: 0 0 10px; padding-left: 20px; color: var(--ink-soft); font-size: 0.95rem; }
+  .honest-note ul:last-child { margin-bottom: 0; }
+
+  .zone-tool {
+    max-width: 620px;
+    margin: 0 auto 24px;
+    background: var(--ink);
+    color: var(--paper-raised);
+    border-radius: 8px;
+    padding: 24px 28px;
+    text-align: center;
+  }
+  .zone-tool .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mustard);
+    margin-bottom: 10px;
+  }
+  .zone-tool input {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1rem;
+    padding: 10px 14px;
+    border-radius: 4px;
+    border: none;
+    width: 140px;
+    text-align: center;
+    margin-right: 10px;
+  }
+  .zone-tool button {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    padding: 11px 20px;
+    background: var(--mustard);
+    color: var(--ink);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .zone-tool .note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--paper-raised);
+    opacity: 0.65;
+    margin-top: 12px;
+  }
+
+  table.zone-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  table.zone-table th {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    background: var(--ink);
+    color: var(--paper-raised);
+    padding: 12px 16px;
+    text-align: left;
+  }
+  table.zone-table td {
+    padding: 12px 16px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  table.zone-table td.zone-figure {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .question-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 640px) { .question-grid { grid-template-columns: 1fr; } }
+  .question-card {
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    padding: 20px;
+    background: var(--paper-raised);
+  }
+  .question-card .qnum {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--mustard);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .question-card h3 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin: 0 0 10px;
+  }
+  .question-card p { font-size: 0.92rem; color: var(--ink-soft); margin: 0; }
+
+  .decision-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 640px) { .decision-grid { grid-template-columns: 1fr; } }
+  .decision-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 22px;
+  }
+  .decision-card .stamp-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: var(--sage);
+    margin-bottom: 10px;
+    display: block;
+  }
+  .decision-card p { margin: 0; color: var(--ink-soft); font-size: 0.95rem; }
+
+  .shortlist {
+    max-width: 720px;
+    margin: 32px auto 0;
+    padding: 20px 24px;
+    background: var(--pass-bg);
+    border: 2px solid var(--pass);
+    border-radius: 6px;
+    text-align: center;
+  }
+  .shortlist .stamp-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    color: var(--pass);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    border: 2px solid var(--pass);
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    transform: rotate(-1.5deg);
+  }
+  .shortlist p { margin: 0; color: var(--ink-soft); font-size: 1rem; }
+  .shortlist .names {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 1.1rem;
+    display: block;
+    margin-top: 8px;
+  }
+
+  .pot-warning {
+    max-width: 880px;
+    margin: 48px auto;
+    padding: 28px 26px;
+    background: var(--fail-bg);
+    border: 2px solid var(--fail);
+    border-radius: 6px;
+  }
+  .pot-warning .stamp-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    color: var(--fail);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    border: 2px solid var(--fail);
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 14px;
+    transform: rotate(-1.5deg);
+  }
+  .pot-warning h3 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.15rem;
+    margin: 0 0 12px;
+  }
+  .pot-warning p { margin: 0 0 10px; color: var(--ink-soft); }
+  .pot-warning ul { margin: 0 0 10px; padding-left: 20px; color: var(--ink-soft); }
+  .pot-warning p:last-child, .pot-warning ul:last-child { margin-bottom: 0; }
+
+  .filter-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .filter-group label {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--mustard);
+    margin-bottom: 6px;
+  }
+  .filter-group select {
+    width: 100%;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.95rem;
+    padding: 8px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .variety-count {
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  table.variety-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 0.88rem;
+  }
+  table.variety-table th {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    background: var(--ink);
+    color: var(--paper-raised);
+    padding: 10px 12px;
+    text-align: left;
+  }
+  table.variety-table td {
+    padding: 10px 12px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-soft);
+    vertical-align: top;
+  }
+  table.variety-table tr:hover td { background: var(--paper); }
+
+  footer {
+    text-align: center;
+    padding: 36px 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--rule);
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="site-name">Can You Grow Blueberries?</div>
+  <a class="back-link" href="index.html">&larr; Back: Can I even do this?</a>
+</header>
+
+<div class="hero">
+  <div class="kicker">Step 2 &middot; You know how — now what do you plant?</div>
+  <h1>Which Variety Should I Plant?</h1>
+  <p class="thesis">There's no real "best" variety among the common, easy-to-source options. Just two personal preferences to sort out, once you know which type is right for where you live.</p>
+</div>
+
+<section class="block">
+  <h2>Zones &amp; Chill Hours</h2>
+  <p class="sub">Two simple checks, easy to overthink</p>
+
+  <p style="text-align:center; color:var(--ink-soft); max-width:680px; margin:0 auto 28px;"><strong>Ideal growing area, with the least to think about: the Midwest and Southeast.</strong> Elsewhere, blueberries are still genuinely doable — just a few more easy-to-fix factors to account for, not a fundamentally different process. Northern Highbush is this guide's standard recommendation because most readers will be somewhere it's the straightforwardly correct choice — not because it's universally the right answer everywhere.</p>
+
+  <div class="question-grid">
+    <div class="question-card">
+      <div class="qnum">Question 1</div>
+      <h3>Cold-Hardy Enough?</h3>
+      <p>Northern Highbush is the most cold-hardy type — safe almost anywhere blueberries make sense at all. Rabbiteye and Southern Highbush are less cold-hardy; plant them outside their safe zone and the plant may survive while failing to fruit, or suffer real winter dieback.</p>
+    </div>
+    <div class="question-card">
+      <div class="qnum">Question 2</div>
+      <h3>Enough Winter Chill?</h3>
+      <p>Only a real concern in genuinely mild-winter climates (Deep South, parts of the Pacific Coast) trying to grow a high-chill Northern Highbush (800–1100 hrs). Not enough chill means delayed, erratic flowering — a completely different failure mode than cold damage, easy to confuse with it.</p>
+    </div>
+  </div>
+
+  <div class="zone-tool">
+    <div class="eyebrow">Enter your zip, see what works for you</div>
+    <input type="text" id="zip-input" placeholder="e.g. 64037" maxlength="5">
+    <button onclick="document.getElementById('zip-note').style.display='block'; document.getElementById('f-zone').scrollIntoView({behavior:'smooth', block:'center'}); document.getElementById('f-zone').focus();">Check</button>
+    <div class="note" id="zip-note" style="display:none; color:var(--mustard); opacity:1; margin-top:10px;">Zip lookup isn't wired up yet — use the zone dropdown below for now, it does the same job.</div>
+    <div class="note">// Real feature, not yet built: zip → USDA zone (solved, USDA publishes zip-to-zone data) + local chill hours (sourceable from extension/NOAA climate data, more complex than zone). Chill hours act as a floor, not a target — a location with MORE chill than a variety needs is fine; only falling BELOW a variety's stated minimum should flag as a mismatch. One secondary note, worth surfacing but not overcomplicating: a low-chill variety planted somewhere with much more chill available satisfies its threshold unusually early in winter — a mid-winter warm spell before true spring can fool it into breaking dormancy prematurely, with flowers then killed by a later real freeze. Same "false spring" mechanism well-known in fruit trees (peaches especially), genuinely less common and less severe in blueberries, but worth a passing mention rather than treating "extra chill available" as risk-free in every direction.</div>
+  </div>
+
+  <table class="zone-table">
+    <tr><th>USDA Zone</th><th>Recommended Type</th></tr>
+    <tr><td class="zone-figure">3</td><td>Half-High only — real, University of Minnesota-bred varieties exist for this, not obscure (Northblue, Northsky, Chippewa, Polaris)</td></tr>
+    <tr><td class="zone-figure">4–6</td><td>Northern Highbush</td></tr>
+  </table>
+
+  <div class="honest-note">
+    <div class="tag-label">An honest caveat specifically for zone 3</div>
+    <p>The berm method this whole guide is built around is about as close to guaranteed as this guide gets for <strong>zones 4 through 10</strong> — that range is genuinely well-covered. <strong>Zone 3 specifically is the one real exception</strong>, because true winter extreme (-30°F to -40°F+) is a different problem than anything else this guide has been tested against. Zone 2 isn't really a further concern beyond that — it's roughly where plant life in general starts to become unrecognizable as anything most people would call a garden plant, blueberries included.</p>
+    <p>The Half-High varieties above are real and confirmed. What isn't confirmed is whether a raised berm interacts well with the snow-cover insulation strategy Half-High breeding specifically depends on — a different protective mechanism than anything else in this guide relies on. Zone 3 growers should treat the variety recommendations as solid, and the berm/planting-method guidance as a reasonable starting point rather than a confirmed answer — worth checking with a local extension office or an experienced zone 3 grower before assuming the method translates directly from zones 4-10 down to true zone 3 conditions.</p>
+  </div>
+
+  <table class="zone-table" style="margin-top:0;">
+    <tr><th>USDA Zone</th><th>Recommended Type</th></tr>
+    <tr><td class="zone-figure">7</td><td>Northern Highbush or Rabbiteye — either works</td></tr>
+    <tr><td class="zone-figure">8–9</td><td>Rabbiteye (recommended) — its real ceiling, needs 350+ chill hours depending on cultivar</td></tr>
+    <tr><td class="zone-figure">9 (warmest pockets)–10</td><td>Southern Highbush becomes necessary here — Rabbiteye's own chill minimum stops being reliably met</td></tr>
+  </table>
+
+  <div class="honest-note">
+    <div class="tag-label">The simple version, without the tool</div>
+    <p>In most of the US, including anywhere with a real winter, Northern Highbush at its typical chill requirement is fine and matches what this guide already recommends — don't overthink it further.</p>
+    <p><strong>Rabbiteye is the recommended home-grower choice zones 8 and 9</strong> — same reasoning as everywhere else in this guide: more forgiving, more disease-resistant, and a wider margin for error than Southern Highbush. Rabbiteye's real ceiling is zone 9, though — it has its own chill-hour floor (typically 350+ hours depending on cultivar), and in the very warmest zone 9 pockets and zone 10, that minimum stops being reliably met. <strong>That's specifically when Southern Highbush becomes necessary</strong> — not a general upgrade over Rabbiteye, just the answer once Rabbiteye's own chill requirement genuinely can't be satisfied.</p>
+    <p><strong>Worth knowing if SHB is what's required for you: it's genuinely the more finicky type to grow</strong>, less tolerant of minor issues that Rabbiteye or Northern Highbush would shrug off — confirmed earlier in this guide (more disease-prone, narrower margin for error, requires closer to ideal conditions). This isn't meant to discourage anyone — if you're in a climate where SHB is the only real option, there isn't an alternative anyway. Just go in knowing it asks for a bit more attention than the other two types.</p>
+    <p><strong>One useful distinction if you're near the cooler edge of SHB's range: the risk usually isn't the plant dying, it's inconsistent fruiting.</strong> Same underlying pattern as the rabbiteye grow-vs-fruit distinction covered earlier, different mechanism — SHB blooms very early in the year by design (that's how it achieves such low chill requirements), so a cooler-than-ideal zone means repeated late frosts damaging the flowers before fruit sets, not the bush itself failing to survive. Frost protection during bloom (row cover, frost cloth) is the real fix if pushing the cooler edge of a variety's range.</p>
+  </div>
+</section>
+
+<section class="block">
+  <h2>The Actual Decision</h2>
+  <p class="sub">Simpler than it sounds</p>
+  <div class="decision-grid">
+    <div class="decision-card">
+      <span class="stamp-label">When do you want to pick?</span>
+      <p>Earlier = cooler weather, less pest pressure. Later = more heat and bugs for often smaller berries — not worth it for most home growers.</p>
+    </div>
+    <div class="decision-card">
+      <span class="stamp-label">What berry size do you prefer?</span>
+      <p>Minor variety-to-variety differences; most common varieties taste fine. Medium/large is the common default most people want.</p>
+    </div>
+  </div>
+  <p style="text-align:center; color:var(--ink-soft); font-size:0.9rem; margin-top:16px;">Exception: pink varieties taste notably different from standard blue — but they're still not recommended, per the earlier warning.</p>
+
+  <div class="honest-note">
+    <div class="tag-label">Pollination — required info, varies by type</div>
+    <p><strong>Northern Highbush (and Half-High): optional, but ideal.</strong> Self-fertile — a single variety alone will fruit fine. A second variety boosts yield and berry size 30-40%, and is basically free to add since NHB varieties all bloom within about a week of each other regardless of when they ripen. No strict compatibility rules like fruit trees have.</p>
+    <p><strong>Rabbiteye: required, not optional.</strong> Effectively self-sterile — a single rabbiteye variety planted alone will bloom but largely won't set fruit. Two or more different rabbiteye varieties with overlapping bloom times are a real requirement here, not a yield bonus.</p>
+    <p><strong>Southern Highbush: required for most varieties, with a few named exceptions.</strong> Unlike NHB, SHB self-fertility is cultivar-dependent, not a given. Most SHB varieties need a partner just like rabbiteye does. <strong>Sunshine Blue, O'Neal, and Sharpblue are confirmed partially self-fertile</strong>, though even these still produce better with a second variety. Sunshine Blue is the most consistently easy of the three — some of the others' zone/hardiness claims are more contested and depend on active care (frost protection during bloom, etc.) than Sunshine Blue's.</p>
+  </div>
+</section>
+
+<section class="block">
+  <h2>Find Your Varieties</h2>
+  <p class="sub">Filter by what actually matters to you — comprehensive, not exhaustive (skips old varieties you'll never find for sale)</p>
+
+  <div class="filter-panel">
+    <div class="filter-group">
+      <label>Type</label>
+      <select id="f-type">
+        <option value="all">Any</option>
+        <option value="NHB">Northern Highbush</option>
+        <option value="RE">Rabbiteye</option>
+        <option value="SHB">Southern Highbush</option>
+        <option value="HH">Half-High (extreme cold, zone 3)</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Your USDA Zone</label>
+      <select id="f-zone">
+        <option value="all">Any</option>
+        <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+        <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+        <option value="9">9</option><option value="10">10</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Season</label>
+      <select id="f-season">
+        <option value="all">Any</option>
+        <option value="Early">Early</option>
+        <option value="Mid">Mid</option>
+        <option value="Late">Late</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Berry Size</label>
+      <select id="f-berry">
+        <option value="all">Any</option>
+        <option value="Medium">Medium</option>
+        <option value="Large">Large</option>
+        <option value="Very Large">Very Large</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Bush Size</label>
+      <select id="f-bush">
+        <option value="all">Any</option>
+        <option value="Compact">Compact (under 5 ft)</option>
+        <option value="Medium">Medium (5–7 ft)</option>
+        <option value="Large">Large (7 ft+)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="variety-count mono" id="variety-count"></div>
+
+  <table class="variety-table" id="variety-table">
+    <thead>
+      <tr>
+        <th>Variety</th><th>Type</th><th>Zone</th><th>Chill Hrs</th><th>Season</th><th>Berry Size</th><th>Bush Size</th><th>Pollination</th><th>Notes</th>
+      </tr>
+    </thead>
+    <tbody id="variety-tbody"></tbody>
+  </table>
+
+  <div class="shortlist">
+    <span class="stamp-label">If a simple answer is wanted, skip the filters — Northern Highbush</span>
+    <p>All good, common, easy to source. No meaningful "best" among them — pick two based on the timing/size preferences above.</p>
+    <span class="names">Duke &middot; Bluecrop &middot; Patriot &middot; Jersey &middot; Elliot</span>
+  </div>
+
+  <div class="shortlist">
+    <span class="stamp-label">Simple answer — Rabbiteye (zones 8–9)</span>
+    <p>Remember: pollination is required here, not optional — pick at least two. These are common, reliable, easy to source.</p>
+    <span class="names">Premier &middot; Tifblue &middot; Climax &middot; Brightwell</span>
+  </div>
+
+  <div class="shortlist">
+    <span class="stamp-label">Simple answer — Southern Highbush (mild winters only)</span>
+    <p>Sunshine Blue is the standout easy option here — most forgiving, cold-hardiest, and partially self-fertile. Pair with any of the others below for best results.</p>
+    <span class="names">Sunshine Blue &middot; O'Neal &middot; Emerald &middot; Misty</span>
+  </div>
+
+<script>
+const varieties = [
+  // Northern Highbush — self-fertile, cross-pollination optional but boosts yield/size 30-40%
+  {name:"Duke", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Mild, low-acid flavor. Widely available."},
+  {name:"Patriot", type:"NHB", zoneMin:3, zoneMax:7, chill:"1000+", season:"Early", berry:"Large", bush:"Medium", bushFt:"3–4 ft", poll:"Optional", notes:"Very cold-hardy, adaptable to heavier soils."},
+  {name:"Earliblue", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"One of the earliest, very popular."},
+  {name:"Spartan", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Firm, very large, blooms later than most early varieties."},
+  {name:"Collins", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Light blue, excellent quality."},
+  {name:"Hannah's Choice", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"High sugar, firmer/better flavor than Duke."},
+  {name:"Bluecrop", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"The default reference point — most popular variety worldwide."},
+  {name:"Blueray", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"High yields, popular for U-pick."},
+  {name:"Bluejay", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Popular for home growing and U-pick."},
+  {name:"Berkeley", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Firm, stores well, average flavor."},
+  {name:"Toro", type:"NHB", zoneMin:4, zoneMax:8, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Easy to pick, good flavor."},
+  {name:"Reka", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–6 ft", poll:"Optional", notes:"Bred in New Zealand. Vigorous, adapts to wide soil range. Striking burgundy-red fall foliage — a real ornamental bonus on top of the fruit."},
+  {name:"Jersey", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Medium", bushFt:"6 ft", poll:"Optional", notes:"An old, reliable standard."},
+  {name:"Legacy", type:"NHB", zoneMin:4, zoneMax:8, chill:"800", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Firm, sweet, aromatic, stores well."},
+  {name:"Elliot", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"6 ft", poll:"Optional", notes:"Tart, very good shelf life (30–45 days)."},
+  {name:"Coville", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"6 ft", poll:"Optional", notes:"Highly aromatic, tart, very good flavor."},
+  {name:"Darrow", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Excellent flavor, easy to pick."},
+  {name:"Nelson", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Berries stay good on the bush for extended periods."},
+  {name:"Chandler", type:"NHB", zoneMin:4, zoneMax:7, chill:"1000+", season:"Late", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Extremely large berries — pushing quarter-size at peak. Notably long ~6-week harvest window. Prone to splitting if watering is inconsistent and a heavy rain follows a dry stretch — another reason for the daily, steady watering this guide already recommends, not just a size/comfort thing."},
+  {name:"Aurora", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"High yields, firm, excellent shelf life."},
+  {name:"Sweetheart", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Marketed for its \"two harvests\" — a real early-summer crop, then a smaller fall re-flowering if the season stays mild. Important: this is not 2x total yield, just two separate, smaller harvest windows. The autumn crop is a nice bonus, not a doubled berry count."},
+  {name:"Pink Popcorn", type:"NHB", zoneMin:5, zoneMax:8, chill:"800–1000", season:"Early", berry:"Medium", bush:"Compact", bushFt:"5 ft", poll:"Optional", notes:"University of Minnesota release — genuinely Northern Highbush despite the pink color, not Rabbiteye like Pink Lemonade. Unlike Pink Lemonade, no reports of unreliable yield found — sourcing consistently describes it as easy, hardy, self-fertile, and productive (mostly retail-source confirmation, not the same depth of firsthand grower reports as Pink Lemonade). Flavor is generally described as standard blueberry taste — the pink color appears to be the main distinguishing feature here, not a genuinely different flavor like Pink Lemonade has."},
+  {name:"Northland", type:"NHB", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"3–4 ft", poll:"Optional", notes:"Most winter-hardy highbush type."},
+  {name:"Bluegold", type:"NHB", zoneMin:4, zoneMax:8, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Highly productive, good for U-pick."},
+  // Half-High (University of Minnesota program — the real zone 3 answer) — pollination behaves like NHB
+  {name:"Northblue", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Early", berry:"Large", bush:"Compact", bushFt:"2–3 ft", poll:"Optional", notes:"Large, dark, firm berries. Hardy to about -35°F; low stature lets snow cover protect buds."},
+  {name:"Northsky", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"1–1.5 ft", poll:"Optional", notes:"The most cold-hardy blueberry that exists — survives down to about -45°F. Dwarf, dense, low mound."},
+  {name:"Northcountry", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Early", berry:"Medium", bush:"Compact", bushFt:"3 ft", poll:"Optional", notes:"Sweet, wild-blueberry-like flavor. Compact, ornamental habit."},
+  {name:"Chippewa", type:"HH", zoneMin:3, zoneMax:8, chill:"800–1000", season:"Mid", berry:"Large", bush:"Compact", bushFt:"3–4 ft", poll:"Optional", notes:"Largest-fruited of the half-highs. Confirmed hardy to zone 2b in Canadian sources."},
+  {name:"Polaris", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"2–4 ft", poll:"Optional", notes:"Ripens about a week before Northblue. Very firm, highly aromatic, tolerates -40°F to -30°F."},
+  {name:"St. Cloud", type:"HH", zoneMin:4, zoneMax:7, chill:"800", season:"Late", berry:"Large", bush:"Compact", bushFt:"3–4 ft", poll:"Optional", notes:"Large, aromatic, slightly tart. The least cold-hardy of this group — zone 3b/4, not true zone 3."},
+  // Rabbiteye — pollination genuinely required, not just beneficial (effectively self-sterile)
+  {name:"Premier", type:"RE", zoneMin:7, zoneMax:9, chill:"550", season:"Early", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Vigorous, disease resistant, productive."},
+  {name:"Climax", type:"RE", zoneMin:7, zoneMax:9, chill:"400–450", season:"Early", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Very reliable in the Deep South."},
+  {name:"Krewer", type:"RE", zoneMin:6, zoneMax:9, chill:"400–450", season:"Early", berry:"Very Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"UGA release, one of the earliest-ripening rabbiteye. Bred as Titan's companion pollinator. Very large berries — same splitting risk as Titan/Chandler if watering isn't kept consistent."},
+  {name:"Brightwell", type:"RE", zoneMin:7, zoneMax:9, chill:"350–400", season:"Mid", berry:"Medium", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Vigorous, produces many new canes. Extended bloom time makes it a strong universal pollinator for other rabbiteye."},
+  {name:"Austin", type:"RE", zoneMin:7, zoneMax:9, chill:"500–550", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Firm, good flavor."},
+  {name:"Alapaha", type:"RE", zoneMin:7, zoneMax:9, chill:"500–550", season:"Mid", berry:"Medium", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Good flavor, smaller seeds than most rabbiteye."},
+  {name:"Powderblue", type:"RE", zoneMin:7, zoneMax:9, chill:"550–650", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Disease resistant, holds up well to rain."},
+  {name:"Tifblue", type:"RE", zoneMin:5, zoneMax:9, chill:"600–700", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Most productive rabbiteye, very firm, popular default."},
+  {name:"Titan", type:"RE", zoneMin:6, zoneMax:9, chill:"500–550", season:"Late", berry:"Very Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Exceptionally large berries, low seed content for a rabbiteye. Needs consistent water to avoid splitting — larger berries are more prone to it, especially after a dry stretch followed by heavy rain. Another reason daily, steady watering matters, not just a size/comfort preference."},
+  {name:"Ochlockonee", type:"RE", zoneMin:7, zoneMax:9, chill:"650–700", season:"Late", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"High yields, late season."},
+  {name:"Pink Lemonade", type:"RE", zoneMin:7, zoneMax:9, chill:"300", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"4–5 ft", poll:"Required", notes:"Pink-fruited rabbiteye hybrid. Confirmed via real grower reports, not just industry caution: yield is often dramatically lower than standard varieties — accounts range from a single handful of berries per year off a mature 6 ft bush to going years without fruiting at all, even on an otherwise healthy-looking plant. When it does produce, the flavor is genuinely distinctive — sweet, mild, with real citrus/lemon notes, unlike typical blueberry flavor, confirmed across independent sources. Worth growing for the experience, but don't plan on it as a dependable producer."},
+  // Southern Highbush — cultivar-dependent; most require a partner, Sunshine Blue and Sharpblue are the partial-self-fertile exceptions
+  {name:"O'Neal", type:"SHB", zoneMin:6, zoneMax:9, chill:"200–300", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Partial", notes:"Most productive early SHB, and partially self-fertile like Sunshine Blue and Sharpblue. Real success reported as low as zone 5/6 with frost protection during bloom. Like most SHB, the risk in cooler zones isn't survival — it's inconsistent fruiting, since SHB blooms very early and repeated late frosts damage the flowers before fruit can set. The plant itself is usually fine; the flowers are what's vulnerable."},
+  {name:"Sunshine Blue", type:"SHB", zoneMin:6, zoneMax:9, chill:"150", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"3–4 ft", poll:"Partial", notes:"The easiest SHB to grow, consistently — multiple dedicated sources confirm zone 6 hardiness without caveat (unlike some other SHB zone-5/6 claims, which come with real conditions attached). Partially self-fertile, same as O'Neal and Sharpblue. Also tolerates slightly higher pH than most varieties."},
+  {name:"Misty", type:"SHB", zoneMin:5, zoneMax:10, chill:"300", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–6 ft", poll:"Required", notes:"Reliable low-chill performer."},
+  {name:"Star", type:"SHB", zoneMin:7, zoneMax:10, chill:"400", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Required", notes:"Good flavor, early ripening."},
+  {name:"Sharpblue", type:"SHB", zoneMin:7, zoneMax:10, chill:"200", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Partial", notes:"Very low chill requirement, developed by U. Florida. One of three SHB varieties confirmed partially self-fertile, alongside Sunshine Blue and O'Neal."},
+  {name:"Emerald", type:"SHB", zoneMin:7, zoneMax:10, chill:"250", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Required", notes:"Most popular, most frequently planted SHB."},
+  {name:"Jubilee", type:"SHB", zoneMin:5, zoneMax:9, chill:"400–500", season:"Mid", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Required", notes:"Reliable mid-season performer."},
+  {name:"Biloxi", type:"SHB", zoneMin:6, zoneMax:9, chill:"300–400", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–5 ft", poll:"Required", notes:"Does well in the Deep South, Texas, and California."},
+];
+
+function inZone(v, zone) {
+  if (zone === "all") return true;
+  const z = parseInt(zone);
+  return z >= v.zoneMin && z <= v.zoneMax;
+}
+
+function render() {
+  const type = document.getElementById('f-type').value;
+  const zone = document.getElementById('f-zone').value;
+  const season = document.getElementById('f-season').value;
+  const berry = document.getElementById('f-berry').value;
+  const bush = document.getElementById('f-bush').value;
+
+  const filtered = varieties.filter(v =>
+    (type === "all" || v.type === type) &&
+    inZone(v, zone) &&
+    (season === "all" || v.season === season) &&
+    (berry === "all" || v.berry === berry) &&
+    (bush === "all" || v.bush === bush)
+  );
+
+  const tbody = document.getElementById('variety-tbody');
+  tbody.innerHTML = filtered.map(v => `
+    <tr>
+      <td><strong>${v.name}</strong></td>
+      <td>${v.type}</td>
+      <td>${v.zoneMin}–${v.zoneMax}</td>
+      <td>${v.chill}</td>
+      <td>${v.season}</td>
+      <td>${v.berry}</td>
+      <td>${v.bushFt}</td>
+      <td>${v.poll}</td>
+      <td>${v.notes}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('variety-count').textContent = `${filtered.length} of ${varieties.length} varieties match`;
+}
+
+['f-type','f-zone','f-season','f-berry','f-bush'].forEach(id =>
+  document.getElementById(id).addEventListener('change', render)
+);
+render();
+</script>
+</section>
+
+<section class="honest-note" style="max-width:880px;">
+  <div class="tag-label">A note on the trademarked varieties you'll see advertised</div>
+  <p>Proven Winners' "Bushel and Berry" line — Peach Sorbet&reg;, Pink Icing&reg;, Blueberry Glaze&trade;, Jelly Bean&reg;, Blueberry Buckle&reg;, Perpetua&reg; (notable for two harvests per season) — represents genuine, serious breeding work, bred primarily for compact size and ornamental foliage suited to container/patio growing. These are legitimately nice plants — it's just not what this guide is built around.</p>
+  <p><strong>Worth knowing:</strong> the same appealing traits often show up in older, non-trademarked varieties too, without the markup or branding. Sweetheart, for example, is a plain Northern Highbush variety that also produces a second, smaller harvest in fall if the season stays mild — the same "two harvests" idea Perpetua is marketed around. The autumn crop isn't really substantial enough to count as a meaningful second harvest — a nice bonus, not a real yield boost. Genuinely a case of a trait that sounds better than it functions, trademarked or not.</p>
+  <p>The real, relevant difference for this guide isn't trademarked vs. not — it's that these varieties are specifically suited to container growing, and that's a different set of tradeoffs than the berm-planting approach here:</p>
+  <ul>
+    <li><strong>More frequent, attentive watering than a berm needs.</strong> Fixable with a timer, but there's real risk in letting a day slip the way a berm planting can tolerate.</li>
+    <li><strong>Automating it well takes more setup</strong> than a drip line across a berm — doable, just more work.</li>
+    <li><strong>Nutrients deplete faster</strong> as water runs through and out. Fixable with more frequent feeding.</li>
+    <li><strong>A real catch-22 with sun exposure</strong> — full sun is needed to fruit well, but it bakes the root zone in a container. Fixable with a bigger or light-colored pot.</li>
+    <li><strong>Containers are heavy and hard to move</strong> once a bush reaches any real size — repositioning for winter protection isn't the simple task it might sound like.</li>
+    <li><strong>Real gap in winter protection, and not a small one.</strong> A berm sits within enough surrounding earth mass to only be marginally less protected than growing directly in the ground. A container has none of that buffer — roots are genuinely exposed to ambient air temperature on all sides, with no earth mass moderating the swings at all.</li>
+  </ul>
+  <p><strong>None of this is impossible — it's just meaningfully more ongoing work than a berm planting ever asks for. Container berries depend on you to live. In-ground/berm-planted bushes do not.</strong> These varieties were bred to fill a real demand for patio/small-space growing — they're not bad plants. This guide is written for the easier path; if containers are still what's wanted, it can be done — just go in knowing what it actually takes.</p>
+</section>
+
+<footer>
+  Built from real, in-ground results. Not a blog. Not a promise.
+</footer>
+
+</body>
+</html>

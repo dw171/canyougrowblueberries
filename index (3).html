@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can You Grow Blueberries?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root {
+    --paper: #EDE9DE;
+    --paper-raised: #F6F3EA;
+    --ink: #241B3A;
+    --ink-soft: #4A4160;
+    --mustard: #C68E17;
+    --sage: #6B7A5E;
+    --pass: #3F6B3F;
+    --pass-bg: #E4EDE0;
+    --fail: #A03232;
+    --fail-bg: #F3E1DF;
+    --rule: #C9C2AE;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', serif;
+    line-height: 1.55;
+  }
+
+  .display {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  header.top {
+    border-bottom: 3px solid var(--ink);
+    padding: 18px 24px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  header.top .site-name {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  header.top .tagline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+  }
+
+  .hero {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 64px 24px 40px;
+    text-align: center;
+  }
+
+  .hero .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--mustard);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin: 0 0 24px;
+  }
+
+  .hero p.thesis {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .stamp-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stamp {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 2px solid;
+    padding: 6px 14px;
+    border-radius: 3px;
+    transform: rotate(-2deg);
+  }
+  .stamp.pass { color: var(--pass); border-color: var(--pass); background: var(--pass-bg); }
+  .stamp.fail { color: var(--fail); border-color: var(--fail); background: var(--fail-bg); transform: rotate(2deg); }
+
+  .reality {
+    background: var(--ink);
+    color: var(--paper-raised);
+    padding: 40px 24px;
+    margin-top: 8px;
+  }
+  .reality-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .reality .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mustard);
+    margin-bottom: 14px;
+  }
+  .reality blockquote {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  section.checker {
+    max-width: 720px;
+    margin: 56px auto;
+    padding: 0 24px;
+  }
+  .checker h2 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  .check-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .check-card input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--sage);
+    flex-shrink: 0;
+  }
+  .check-card label {
+    font-size: 1rem;
+  }
+
+  .two-path {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 28px;
+  }
+  @media (max-width: 640px) { .two-path { grid-template-columns: 1fr; } }
+
+  .path {
+    border-radius: 6px;
+    padding: 22px;
+    border: 2px solid;
+  }
+  .path.yes { border-color: var(--pass); background: var(--pass-bg); }
+  .path.no  { border-color: var(--fail); background: var(--fail-bg); }
+  .path .stamp-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  .path.yes .stamp-label { color: var(--pass); }
+  .path.no .stamp-label { color: var(--fail); }
+  .path p { margin: 0; font-size: 0.98rem; color: var(--ink-soft); }
+
+  section.rules {
+    max-width: 880px;
+    margin: 64px auto;
+    padding: 0 24px;
+  }
+  section.rules h2 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  section.rules > p.sub {
+    text-align: center;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 36px;
+  }
+
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+  }
+
+  .rule-tag {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-left: 5px solid var(--mustard);
+    border-radius: 4px;
+    padding: 20px;
+    position: relative;
+  }
+  .rule-tag .tag-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--mustard);
+    margin-bottom: 8px;
+  }
+  .rule-tag h3 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.05rem;
+    margin: 0 0 10px;
+  }
+  .rule-tag .figure {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .rule-tag p {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  section.photos {
+    max-width: 1000px;
+    margin: 64px auto;
+    padding: 0 24px;
+  }
+  section.photos h2 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+  }
+  section.photos p.sub {
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    margin-bottom: 24px;
+  }
+  .photo-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 720px) { .photo-strip { grid-template-columns: repeat(2, 1fr); } }
+  .photo-placeholder {
+    aspect-ratio: 4/3;
+    background: repeating-linear-gradient(45deg, var(--paper-raised), var(--paper-raised) 10px, #E3DFD1 10px, #E3DFD1 20px);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 8px;
+  }
+
+  section.pot-warning {
+    max-width: 720px;
+    margin: 64px auto;
+    padding: 28px 26px;
+    background: var(--fail-bg);
+    border: 2px solid var(--fail);
+    border-radius: 6px;
+  }
+  section.pot-warning .stamp-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    color: var(--fail);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    border: 2px solid var(--fail);
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 14px;
+    transform: rotate(-1.5deg);
+  }
+  section.pot-warning h3 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.15rem;
+    margin: 0 0 12px;
+  }
+  section.pot-warning p {
+    margin: 0 0 10px;
+    color: var(--ink-soft);
+  }
+  section.pot-warning p:last-child { margin-bottom: 0; }
+
+  footer {
+    text-align: center;
+    padding: 36px 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--rule);
+    margin-top: 40px;
+  }
+  section.honest-note {
+    max-width: 720px;
+    margin: 40px auto 0;
+    padding: 22px 24px;
+    background: var(--paper-raised);
+    border: 1px dashed var(--sage);
+    border-radius: 6px;
+  }
+  section.honest-note .tag-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sage);
+    margin-bottom: 10px;
+  }
+  section.honest-note p {
+    margin: 0 0 10px;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  section.honest-note p:last-child { margin-bottom: 0; }
+
+  section.faq-blunt {
+    max-width: 720px;
+    margin: 32px auto 0;
+    padding: 22px 24px;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-left: 5px solid var(--sage);
+    border-radius: 6px;
+  }
+  section.faq-blunt .tag-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sage);
+    margin-bottom: 10px;
+  }
+  section.faq-blunt h3 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.05rem;
+    margin: 0 0 10px;
+  }
+  section.faq-blunt p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  section.steps {
+    max-width: 720px;
+    margin: 40px auto 0;
+  }
+  section.steps h3 {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    margin: 0 0 16px;
+    text-align: center;
+  }
+  ol.step-list {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ol.step-list li {
+    counter-increment: step;
+    position: relative;
+    padding: 16px 20px 16px 56px;
+    margin-bottom: 10px;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  ol.step-list li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    width: 28px;
+    height: 28px;
+    background: var(--ink);
+    color: var(--paper-raised);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  ol.step-list li strong { color: var(--ink); }
+
+  .berm-diagram {
+    max-width: 500px;
+    margin: 24px auto;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="site-name">Can You Grow Blueberries?</div>
+  <div class="tagline">A field guide, not a blog post.</div>
+</header>
+
+<div class="hero">
+  <div class="kicker">Midwest home growers · Real results, not opinions</div>
+  <h1>If you want blueberries<br>outside a blueberry area,<br>you can't half-ass it.</h1>
+  <p class="thesis">This isn't a promise that anything works if you try hard enough. It's the reality of what does and doesn't, built from time-tested results — not a nice story about how grandma did it. Get the setup right once, and blueberries are about as carefree as fruit gets: fungal resistant, pest-free for almost every home grower, and they'll outlive you.</p>
+  <div class="stamp-row">
+    <div class="stamp pass">Native range: easy</div>
+    <div class="stamp fail">Everywhere else: no shortcuts</div>
+  </div>
+</div>
+
+<div class="hero" style="padding-top:0;">
+  <p class="thesis" style="font-size:0.95rem; opacity:0.85;">Still deciding, or just curious what's involved? A few honest reasons people find it worth it: better taste than store-bought, real savings over decades of production, full control over what's sprayed (or not), and once set up correctly, one of the lowest-maintenance fruiting plants around.</p>
+</div>
+
+<div class="reality">
+  <div class="reality-inner">
+    <div class="eyebrow">Before you spend a dollar</div>
+    <blockquote>"This is not the only way to grow them, but if you want as close to a guaranteed success, then follow this guide. It's built from time-tested results — not a promise, not a fond memory, not a nice-sounding blog. Do it right, or plan on years and money wasted."</blockquote>
+  </div>
+</div>
+
+<section class="checker">
+  <h2>Step 1 — Check your area</h2>
+  <div class="check-card">
+    <input type="checkbox" id="c1"><label for="c1">Wild blueberries grow near you</label>
+  </div>
+  <div class="check-card">
+    <input type="checkbox" id="c2"><label for="c2">Lots of native pine trees nearby</label>
+  </div>
+  <div class="check-card">
+    <input type="checkbox" id="c3"><label for="c3">Naturally sandy, forested soil</label>
+  </div>
+
+  <div class="two-path">
+    <div class="path yes">
+      <span class="stamp-label">Checked any box</span>
+      <p>You're in luck. Skip most of this guide — confirm your pH, put the bush in the ground.</p>
+    </div>
+    <div class="path no">
+      <span class="stamp-label">Checked none</span>
+      <p>You're not in native range — most everyone else. Real cost, real effort, multi-year commitment. No workaround. Read on before you spend anything.</p>
+    </div>
+  </div>
+
+  <section class="honest-note">
+    <div class="tag-label">The actual number you're targeting</div>
+    <p><strong>pH 4.5–5.5. That's the real range — not a suggestion, a hard target.</strong> Below roughly 4.0–4.5, iron uptake drops off toward nonexistent. Above 5.5, the same thing happens from the other direction — don't read "5.5" as a soft ceiling you can stretch toward 6 and still expect a healthy bush. A pH sitting at 5.5–6 doesn't fail outright, it leads to a slow, multi-year decline as the plant can't take up the iron and manganese it needs, regardless of how much is actually in the soil.</p>
+    <p><strong>Sunshine Blue tolerates slightly higher pH than most varieties — but it's not a loophole.</strong> It still does best right in the 4.5–5.5 range like everything else. Don't treat it as an excuse to skip getting the soil right.</p>
+    <p><strong>Why iron specifically, and why it's not a minor thing to shrug off:</strong> iron isn't one of the "big three" (N-P-K) most people think of when they hear "nutrients," so it's easy to assume a little shortage barely matters. It does. Plants need iron to produce chlorophyll — the pigment that lets them photosynthesize, i.e. make their own energy from sunlight. Without enough iron, chlorophyll production stalls and leaves turn yellow (a condition called chlorosis), usually starting on new growth, with the veins often staying green longer than the tissue around them. A chlorotic plant isn't just off-color — it's a plant that's increasingly unable to feed itself, which is exactly why pH-driven iron lockout causes a slow decline rather than one obvious symptom you can fix overnight.</p>
+    <p><strong>Why blueberries specifically, when plenty of other plants grow fine well outside 4.5–5.5?</strong> Most garden plants have root hairs — fine structures on the roots that directly absorb water and nutrients across a fairly forgiving pH range. Blueberries never evolved root hairs at all. They come from marsh and bog environments where nutrients came to the plant rather than the plant seeking them out, so instead they rely almost entirely on a partnership with a specific fungus (ericoid mycorrhizae) that does the nutrient uptake work for them. That fungal partnership only functions in acidic, high-organic-matter conditions — so it's not just that the plant prefers acid, it's that the whole system it depends on for feeding itself shuts down outside that range, with no normal root-hair backup to fall back on the way most other plants have.</p>
+    <p>This is exactly why this guide uses peat moss instead of sulfur amendments into native soil: sulfur requires watching for over- or under-application and correct timing to land in this range. Peat moss gets there immediately, with no dosing math to get wrong.</p>
+    <p><strong>There's a second, more practical roadblock the sulfur/native-soil approach carries that peat moss sidesteps entirely: getting an accurate starting soil test in the first place.</strong> Sulfur dosing depends on actually knowing the native soil's current pH and buffering capacity — but cheap consumer soil test kits are broadly unreliable: reading a color chart by eye is subjective, correctly mixing the reagents is its own failure point, and expired reagents give a confidently wrong answer with no indication anything's off. A real soil probe is a genuine step up in reliability, but the real, fully accurate answer is still a university/agricultural extension soil test. Unless someone already lives in a rural or farm-connected area, they likely have no idea that service exists or how to access it — extension offices can absolutely tell you the exact sulfur amount needed once a real sample is submitted, but that's one more roadblock standing between deciding to plant and actually starting. Building a known-good medium from scratch with peat moss skips the soil test question entirely — there's no native starting pH to accurately measure in the first place, because the growing medium isn't native soil.</p>
+    <p><strong>Soil pH specifically is the one thing that genuinely can't afford to be wrong, in a way water and fertilizer amounts aren't.</strong> A plant can survive imperfect watering or a slightly-off feeding schedule — nature and attentive correction can compensate to some real degree, and the plant lives. Soil pH doesn't self-correct, and trying to fix it after the fact, once a bush is already established, is a genuinely bad idea. That's exactly why getting the growing medium right from the start matters more than any other single decision in this guide — it's the one variable with no room to recover from a wrong guess later.</p>
+    <p><strong>This isn't the cheapest way to grow blueberries, and that's not being hidden.</strong> It's gardening — there are plenty of legitimate ways to do this, and no claim here that alternatives (native soil, sulfur, a dug hole) are wrong. But peat moss is the one mix that's guaranteed to sit in the correct range from the very start, with no "what if the test was off," no "what if the dose was wrong," no waiting to find out. For someone who wants the most hassle-free, guaranteed approach possible with zero what-ifs along the way, this is that guide.</p>
+    <p><strong>Someone reading this will look at a simpler, cheaper method elsewhere and reasonably wonder if all of this is overkill.</strong> That's a fair instinct, and it's worth being honest about what happens next either way. Try the cheaper route, and it might work — or it might not. Either way, that answer takes years to arrive, because that's how long blueberries take to reveal whether a soil decision was right. This guide's approach is workable from day one, with no multi-year wait to find out whether the gamble paid off.</p>
+  </section>
+</section>
+
+<section class="rules">
+  <h2>Building It — Dimensions & Mix</h2>
+  <p class="sub">What to actually do with the materials, not just what to buy</p>
+  <div class="rule-grid">
+    <div class="rule-tag">
+      <div class="tag-label">Root depth</div>
+      <span class="figure">~18"</span>
+      <p>Roots are shallow — rarely deeper than about 18 inches. The berm doesn't need to be dramatically deep, just correctly built.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Berm size</div>
+      <span class="figure">12–16" × 3'</span>
+      <p>Height by width. <strong>Single bush (not really recommended alone, but here's the number if you do):</strong> a 3 × 3 ft berm is enough. <strong>Multiple bushes in a row:</strong> add 2 ft of buffer beyond the outermost bush on each end. So 2 bushes at 4 ft spacing = 8 ft total row length (2 ft end + 4 ft between + 2 ft end). General formula: spacing × (number of bushes − 1), plus 4 ft total for both end buffers.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Spacing</div>
+      <span class="figure">4–5 ft</span>
+      <p>Between bushes for most varieties.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Mature height</div>
+      <span class="figure">5–8 ft</span>
+      <p>For most varieties. Some run larger, some come in compact/dwarf forms — variety-specific details are on the next step.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Soil mix</div>
+      <span class="figure">50/50</span>
+      <p>Peat moss to pine bark. Doesn't need to be precise — just make sure the peat moss is genuinely in there. Erring toward more peat moss is the safer mistake to make. <strong>Do not mix in native soil — berm or not.</strong> The native soil wasn't good enough to grow blueberries in to begin with; that's the whole reason you're amending in the first place. Adding it back just dilutes the correct mix with the soil you were trying to avoid.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Volume</div>
+      <span class="figure">4 + 4 cu ft</span>
+      <p>Roughly 4 cu ft peat moss and 4 cu ft pine bark per bush's section is a good starting point — save one extra bag of pine bark for top-dressing mulch after planting. Sand is optional and minimal if used at all — type doesn't matter, it's mostly a good way to use up leftover play sand.</p>
+    </div>
+  </div>
+
+  <section class="honest-note">
+    <div class="tag-label">When to actually do all this</div>
+    <p><strong>Ideally early spring or fall.</strong> Both avoid the two most stressful conditions for a new planting — peak summer heat and a hard freeze right after going in the ground. Fall planting lets roots establish over the dormant season before spring growth kicks in; early spring gives roots time to settle before summer heat arrives.</p>
+    <p><strong>It's better to wait for ideal timing if at all possible.</strong> But if there's a real reason it has to happen now — bushes only available at the wrong time of year, whatever the situation — <strong>as long as the ground isn't frozen, it can technically be done.</strong> Off-season planting just means the risks are higher and worth taking seriously. Summer planting means more heat stress during establishment — the water rule above isn't optional in that scenario, it's what actually gets a bush through it. Planting close to winter means less time for roots to establish before the ground freezes — a heavier mulch layer for winter protection helps offset that. The mitigation isn't some separate process; it's just following the rules already in this guide more strictly when timing isn't ideal.</p>
+  </section>
+
+  <section class="steps">
+    <h3>Building &amp; Planting, Step by Step</h3>
+
+    <svg class="berm-diagram" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- native soil -->
+      <rect x="0" y="220" width="500" height="80" fill="#DDD6C4"/>
+      <text x="250" y="270" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--ink-soft)">native soil — undisturbed, nothing mixed in</text>
+      <!-- ground line -->
+      <line x1="0" y1="220" x2="500" y2="220" stroke="var(--ink)" stroke-width="2"/>
+      <!-- berm mound -->
+      <polygon points="100,220 400,220 340,132 160,132" fill="var(--sage)" opacity="0.35" stroke="var(--ink)" stroke-width="2"/>
+      <!-- mulch top-dress -->
+      <rect x="160" y="124" width="180" height="10" fill="#8A5A34" stroke="var(--ink)" stroke-width="1.5"/>
+      <text x="250" y="108" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink-soft)">pine bark mulch top-dress</text>
+      <!-- root ball hole -->
+      <circle cx="250" cy="140" r="26" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <!-- simple bush -->
+      <line x1="250" y1="140" x2="250" y2="95" stroke="#4A3B2A" stroke-width="4"/>
+      <line x1="250" y1="115" x2="225" y2="90" stroke="#4A3B2A" stroke-width="3"/>
+      <line x1="250" y1="110" x2="278" y2="88" stroke="#4A3B2A" stroke-width="3"/>
+      <circle cx="222" cy="86" r="12" fill="var(--sage)"/>
+      <circle cx="250" cy="80" r="14" fill="var(--sage)"/>
+      <circle cx="280" cy="84" r="12" fill="var(--sage)"/>
+      <!-- width dimension -->
+      <line x1="100" y1="245" x2="400" y2="245" stroke="var(--mustard)" stroke-width="1.5"/>
+      <line x1="100" y1="240" x2="100" y2="250" stroke="var(--mustard)" stroke-width="1.5"/>
+      <line x1="400" y1="240" x2="400" y2="250" stroke="var(--mustard)" stroke-width="1.5"/>
+      <text x="250" y="262" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="600" font-size="13" fill="var(--mustard)">~2–3 ft wide</text>
+      <!-- height dimension -->
+      <line x1="60" y1="220" x2="60" y2="132" stroke="var(--mustard)" stroke-width="1.5"/>
+      <line x1="55" y1="220" x2="65" y2="220" stroke="var(--mustard)" stroke-width="1.5"/>
+      <line x1="55" y1="132" x2="65" y2="132" stroke="var(--mustard)" stroke-width="1.5"/>
+      <text x="30" y="180" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="600" font-size="13" fill="var(--mustard)" transform="rotate(-90 30 180)">12–16" after compression</text>
+      <!-- flattened top label -->
+      <text x="250" y="152" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink-soft)">flattened &amp; compressed, not loose</text>
+    </svg>
+
+    <ol class="step-list">
+      <li><strong>Mix the peat moss and pine bark together thoroughly.</strong> Doesn't need to be precise — just get it evenly combined, not clumped in separate pockets.</li>
+      <li><strong>Fertilizing at planting time is optional — and generally not recommended.</strong> Fresh plantings don't need heavy feeding, if any at all. You can mix in a very light amount of Holly-tone if you want, but skipping it entirely is the safer default. There's more risk in overdoing it on a brand-new planting than benefit in doing it at all.</li>
+      <li><strong>Wet the mix before shaping it.</strong> Wet material is just easier to mix, limits dust inhalation, and packs into a berm shape far easier than dry, fluffy peat moss. Don't overthink it — you'll water the bush in after planting anyway, which helps settle and move the mix around as needed. Best trick: build the berm right before a good rain is forecast — nothing wets it as evenly with as little effort as real rain.</li>
+      <li><strong>Rake the wetted mix into a berm shape</strong> — about 2–3 ft wide, as long as needed for however many bushes you're planting. <strong>Height target: 12–16" after it compresses down</strong>, not before — that's the real number. If it settles below that over time, just add more mix to build it back up. Don't overthink precision: get it somewhere under knee height and you're fine. Some roots will eventually reach into the native soil below — that's not a problem, even though it isn't perfect pH down there.</li>
+      <li><strong>Flatten and compress the top.</strong> You're not building a loose, fluffy mound — pack it down so it holds together.</li>
+      <li><strong>Dig a hole in the berm the size of the nursery pot.</strong></li>
+      <li><strong>Set the bush in, compress the sides, and fill any air pockets</strong> around the roots — watering it in right away helps settle everything into place.</li>
+      <li><strong>Top-dress with pine bark mulch</strong> — the bag you set aside earlier. That's it, it's ready.</li>
+    </ol>
+  </section>
+
+  <section class="honest-note">
+    <div class="tag-label">You don't have to hunt for any of this</div>
+    <p>Lowe's, Home Depot, and Menards actively stock everything on this list — peat moss, pine bark, Holly-tone — and sometimes the blueberry bushes themselves. This isn't a specialty-store project. One trip usually covers it.</p>
+  </section>
+</section>
+
+<section class="rules">
+  <h2>The Non-Negotiables</h2>
+  <p class="sub">This is the whole list. Get these right and they mostly take care of themselves — no constant spraying, no babying. Pest pressure varies a lot by region: beetles are the main issue in some areas, spotted wing drosophila in others where it's spread, something else elsewhere. If something on your bush looks off, look up what's actually common in your area rather than assuming the worst — most of what you'll see turns out to be cosmetic, but check locally instead of guessing. The single best tool you have: go look at your bush every few days. You'll learn what normal looks like fast, and when something's actually wrong, it becomes obvious by comparison.</p>
+  <div class="rule-grid">
+    <div class="rule-tag">
+      <div class="tag-label">Sun</div>
+      <span class="figure">6–8+ hrs</span>
+      <p>Minimum daily in summer, non-negotiable. Any shade — a fence, a shed, a nearby tree — noticeably cuts into results compared to an unshaded bush nearby. This isn't a survival issue, it's a production issue: a shaded bush usually lives fine and stays green, it just won't fruit well. Don't overthink the exact hour count — more sun, happier and more productive bush.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Structure</div>
+      <h3>Raised Berm (Strongly Recommended)</h3>
+      <p>You can technically skip this — dig a shallow hole, fill it with the mix, plant. Here's why that's a bad idea: the organic mix breaks down and settles over time, turning a flat planting into a literal low spot in your yard. That spot is also a completely different texture than the native soil around it, so it acts like a sponge — collecting water instead of draining it. A raised berm avoids this "bathtub effect" entirely. Skip it, and overwatering becomes something you have to actively manage instead of a non-issue.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Medium</div>
+      <h3>Peat Moss</h3>
+      <p>Not sulfur. Peat sits at the right pH immediately — no dosing math, no months-long wait for soil chemistry to shift.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Mulch</div>
+      <h3>Pine Bark (recommended)</h3>
+      <p>Not the only mulch that works, but the only one recommended here — easiest to source, the option everyone can agree on, and about the cheapest you'll find anywhere. Pine bark and pine bark "nuggets" are the same thing — don't overthink the label at the store. What to actually avoid: plain pine wood/wood chips (not the same as bark, rots faster), fresh cedar/redwood (can injure young plants), whole leaves, grass clippings (mat down, suffocate roots).</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Water</div>
+      <span class="figure">Slow &amp; steady</span>
+      <p>"2 inches a week" is a seasonal reference, not instructions — it doesn't tell you how to deliver it once rain stops. Watering once a week with a bucket doesn't work even if the total gallons look right on paper. A mature bush can pull 5+ gallons a day at peak summer heat, but the answer is continuous low-volume delivery, not a periodic dump. By the time you see stress, it's too late — set up real irrigation or don't expect this to work.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Feed</div>
+      <span class="figure">1–2 cups</span>
+      <p><strong>For plants in the ground at least a year</strong> — not brand new plantings. Fertilizing heavily right after planting isn't ideal (see Building It above). Once established: Espoma Holly-tone, 3–4x a season. Old coffee cup. Never after early August. Don't worry about hitting exactly 30 days — roughly a month, 3 to 5 weeks either way is fine. Ideally, time it right before a heavy rain: it smells, and the rain both washes it in and neutralizes the smell. Nothing else — not eggshells, not coffee grounds, not banana peels.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Birds</div>
+      <h3>Full Netting Only</h3>
+      <p>Scare tape and fake owls do nothing. Full surround netting, or plant more bushes and accept the loss.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Weeds</div>
+      <h3>Not Optional</h3>
+      <p>Blueberries compete poorly against weeds for water and nutrients — a direct consequence of the weak, passive root system already covered (no root hairs, dependent on a fungal partnership rather than aggressive nutrient-seeking roots). <strong>Don't assume the acidic berm keeps weeds out — it won't.</strong> Weeds aren't one plant with one preference; as a category they'll grow across nearly the entire pH range soil can legitimately have, acidic bogs and alkaline limestone ground alike. Getting the soil chemistry right doesn't suppress weeds at all — that's a separate job that still has to be done.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Deer</div>
+      <h3>Different Problem Than Birds</h3>
+      <p>Most people reading this are in city limits with no deer pressure — this won't apply to you. But if you do have deer nearby, protect accordingly: this isn't an exempt plant. Deer will eat a blueberry bush in spring the same as any other fruit tree or shrub — eating the actual plant, not just stealing berries the way birds do. Losing a whole young bush to browsing is a bigger problem than losing some fruit.</p>
+    </div>
+  </div>
+
+  <section class="honest-note">
+    <div class="tag-label">One honest caveat</div>
+    <p>Even doing everything right, a young bush can sometimes die within the first year or two for no obvious reason. This isn't unique to home growers — it happens to professionals too. Check for the obvious stuff first (standing water, wrong medium, animal damage), but if nothing looks wrong, don't overthink it.</p>
+    <p><strong>They either make it through establishment or they don't.</strong> If one dies with no clear cause, just replant. Experience doesn't change the odds much on this one.</p>
+  </section>
+
+  <section class="honest-note">
+    <div class="tag-label">How to actually deliver the water</div>
+    <p><strong>Drip line/drip tape is the ideal setup</strong> — slow, even, continuous delivery right at the root zone. It holds that even delivery over longer runs, which matters if you're watering more than one or two bushes.</p>
+    <p><strong>Soaker hose is the practical choice for most homeowners</strong> — much easier to set up than drip tape, and good enough for a small home planting. The tradeoff: soaker hoses have real length limits. Water pressure and flow drop off noticeably past a certain length, so a long soaker hose run stops delivering evenly at the far end. That's exactly why drip tape/line is the better setup for a larger planting — it just takes more work to set up.</p>
+    <p><strong>Add a simple water timer and this stops being a daily chore.</strong> A basic, non-smart, battery-powered hose-end timer is genuinely ideal here — no app, no wifi, nothing to overthink. Simpler is better when nothing more sophisticated is actually required. Set on a schedule, it turns "remember to water every single day" into a hands-off system — connect it once to the drip line or soaker hose and forget about it. As a starting point: roughly 10–15 minutes, a couple times a day. That's not a lot of water overall. One catch: a soaker hose makes it harder to actually track how much water is being delivered compared to drip line, which has known emitter flow rates you can calculate against.</p>
+    <p><strong>Why "just keep it constantly wet" doesn't turn into overwatering:</strong> the raised berm. This is exactly why commercial berry farms build the same way — a raised, well-drained berm means you never have to worry about flooding the planting or checking the weather forecast before watering. Excess water just drains through instead of pooling. On flat ground, this same watering advice would risk root rot; on a proper berm, it doesn't. This is one more reason the berm isn't optional.</p>
+  </section>
+
+  <section class="honest-note">
+    <div class="tag-label">Why Holly-tone specifically, and where to get it</div>
+    <p><strong>Why not just any 4-3-4?</strong> Cost and availability. Holly-tone is cheap and sold everywhere — you won't struggle to find it. Espoma also makes Berry-tone, which is a genuinely good product, but it costs more and is harder to actually find on a shelf. Anything else with similar numbers — we haven't used it ourselves and won't vouch for something we can't personally verify works.</p>
+    <p><strong>Where to buy it:</strong> <a href="https://www.homedepot.com/p/Espoma-8-lbs-Organic-Holly-Tone-Fertilizer-100047160/202258530" target="_blank" rel="noopener">Home Depot</a> · <a href="https://www.lowes.com/pd/Espoma-Holly-tone-8-lb-Natural-Tree-Food/3047943" target="_blank" rel="noopener">Lowe's</a> · <a href="https://www.acehardware.com/departments/lawn-and-garden/gardening/plant-food/F011295?variationProductCode=72171" target="_blank" rel="noopener">Ace Hardware</a> · also widely available on Amazon. It really is easy to find.</p>
+    <p><strong>A word on Espoma as a company, for what it's worth:</strong> family-owned, making organic plant food since 1929, still manufacturing in the same facility in Millville, NJ — a solar-powered one, by their own account. Holly-tone is a registered Organic Input Material (look up what that actually means if curious), contains real beneficial bacteria (their own guaranteed analysis lists specific colony-forming-unit counts, including Bacillus amyloliquefaciens), and Espoma states no sludges or fillers go into it. Worth reading what the company says about itself directly, not just taking this guide's word for it. This isn't a random product pick — it's what my entire commercial berry operation runs on, not just a homeowner's backyard bush.</p>
+  </section>
+</section>
+
+<section class="photos">
+  <h2>What to Actually Expect, Year by Year</h2>
+  <p class="sub">// Rough estimates, not guarantees — every site varies</p>
+  <div class="rule-grid">
+    <div class="rule-tag">
+      <div class="tag-label">Starting Size</div>
+      <span class="figure">2–3 gal</span>
+      <p>The sweet spot. Bigger bushes can be moved and survive, but they need more immediate, intensive care through transplant shock — and cost a lot more. If your setup isn't dialed in yet, that's the most expensive way to find out. 5 gallon is the largest worth planting, and usually the biggest you'll find at a retail store anyway.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Year 1</div>
+      <h3>Remove Flowers</h3>
+      <p>Not required — skipping is fine. But pulling off flowers/berries the first year lets the plant build roots and shoots instead of fruit, which pays off in later yields.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Year 3</div>
+      <span class="figure">~0.5 lb</span>
+      <p>Per bush, roughly. Early production, don't expect much yet.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Year 4</div>
+      <span class="figure">1–2 lb</span>
+      <p>Per bush, roughly. Picking up.</p>
+    </div>
+    <div class="rule-tag">
+      <div class="tag-label">Year 5–7+</div>
+      <span class="figure">6–15 lb</span>
+      <p>Full production under ideal conditions — roughly 1–2 gallons of berries per bush, depending on variety. This is a plateau, not a still-climbing number — unlike nut trees, blueberry bushes reach a stable mature size and hold there for their 50+ year productive lifespan, rather than continuing to increase for decades. <strong>Also: these "year" numbers track the plant's actual age, not time since it went in your ground.</strong> A bush bought at 3 years old from a nursery generally performs like a 3-year-old plant right away — it doesn't restart the clock at zero on transplant, so buying older/larger stock genuinely skips the slow early years.</p>
+    </div>
+  </div>
+</section>
+
+<section class="pot-warning">
+  <span class="stamp-label">Hands Off</span>
+  <h3>Do not prune if you don't know what you're doing</h3>
+  <p>This guide is about getting a first-time planting established — not
+  about maintaining or shaping mature bushes. Pruning falls outside that
+  scope entirely, and that's exactly the point: it's not a beginner's-guide
+  topic.</p>
+  <p>Blueberries flower on the previous year's growth. Cut the wrong wood at
+  the wrong time of year and you lose that year's — or next year's — entire
+  crop.</p>
+  <p>Pruning isn't required for a young bush's survival or productivity. If
+  you're not sure what you're doing, the right move is <strong>not pruning
+  at all</strong>, not guessing. This guide won't walk you through it — once
+  bushes are mature and you want to learn proper technique, find a dedicated
+  pruning/maintenance guide. That's a different topic than this one. Doing
+  nothing beats doing it wrong.</p>
+</section>
+
+<section class="honest-note" style="max-width:880px;">
+  <div class="tag-label">"But won't city water raise my soil pH?"</div>
+  <p>You'll read this warning elsewhere, and the concern is real in theory — most municipal tap water is treated slightly alkaline. In practice, it takes a lot to actually move the needle on a properly built peat moss/pine bark medium, especially once Holly-tone's built-in sulfur is doing ongoing maintenance work every feeding.</p>
+  <p><strong>A properly built system isn't going to be affected by even the poorest quality drinking water.</strong> This is a real, verified result over years on ordinary city water, not a theoretical claim.</p>
+</section>
+
+<section class="pot-warning">
+  <span class="stamp-label">Do Not</span>
+  <h3>What about growing in a pot?</h3>
+  <p>Yes, it's technically possible. Yes, it can work. There are even varieties bred specifically to be small enough for it.</p>
+  <p><strong>Will it work for you?</strong> Every one of these concerns is fixable if someone genuinely wants to put in the effort: bigger pots buffer heat and moisture better, light-colored containers reflect heat instead of absorbing it, timers make automated watering workable, more frequent feeding offsets nutrient runoff. None of it is impossible. It's just meaningfully more ongoing work than a berm planting ever asks for — more frequent, attentive watering, real attention to root-zone heat in full sun, more frequent feeding to keep up with runoff. Containers are also heavy and hard to move once a bush has any real size, and the winter protection gap is real and not small — a berm sits within enough surrounding earth mass to be only marginally less protected than growing directly in the ground, while a container has no earth mass buffering it at all. <strong>Container berries depend on you to live. In-ground/berm-planted bushes do not.</strong> That's not a knock on those varieties — they were bred to fill a real demand for patio/small-space growing — it's just a genuinely bigger ongoing commitment, and this guide is written for the easier path. If containers are still what's wanted, it can be done — just go in knowing what it actually takes.</p>
+</section>
+
+<section class="faq-blunt">
+  <div class="tag-label">The other question we get</div>
+  <h3>"How do I grow these without tearing up my yard?"</h3>
+  <p>You don't. There's no low-effort version of this that actually works. Keep buying blueberries at the store, or admire your neighbor's bushes from a respectful distance.</p>
+</section>
+
+<section class="checker" style="text-align:center;">
+  <h2 style="border:none;">Know How Now. What Do You Plant?</h2>
+  <p style="color:var(--ink-soft); margin-bottom:20px;">Zones, chill hours, and which varieties actually make sense for where you live.</p>
+  <a href="varieties.html" style="display:inline-block; font-family:'Oswald',sans-serif; font-weight:600; text-transform:uppercase; font-size:0.9rem; letter-spacing:0.05em; padding:12px 26px; background:var(--ink); color:var(--paper-raised); border-radius:4px; text-decoration:none;">Which Variety Should I Plant? &rarr;</a>
+</section>
+
+<footer>
+  Built from real, in-ground results. Not a blog. Not a promise.
+</footer>
+
+</body>
+</html>

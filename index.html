@@ -352,6 +352,63 @@
     border-top: 1px solid var(--rule);
     margin-top: 40px;
   }
+
+  .side-nav {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    z-index: 100;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px 8px;
+    max-width: 150px;
+  }
+  .side-nav a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+    line-height: 1.3;
+    transition: all 0.15s ease;
+  }
+  .side-nav a:hover { background: var(--paper); color: var(--ink); }
+  .side-nav a.active { color: var(--mustard); border-left-color: var(--mustard); font-weight: 600; background: var(--paper); }
+  @media (max-width: 1150px) { .side-nav { display: none; } }
+
+  .floating-nav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .float-btn {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    padding: 10px 18px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    white-space: nowrap;
+  }
+  .float-next { background: var(--ink); color: var(--paper-raised); }
+  .float-top { background: var(--paper-raised); color: var(--ink); border: 1px solid var(--rule); }
   section.honest-note {
     max-width: 720px;
     margin: 40px auto 0;
@@ -464,7 +521,21 @@
   <div class="tagline">A field guide, not a blog post.</div>
 </header>
 
-<div class="hero">
+<nav class="side-nav" id="side-nav">
+  <a href="#top">Start Here</a>
+  <a href="#check-area">Check Your Area</a>
+  <a href="#building-it">Build The Berm</a>
+  <a href="#non-negotiables">Non-Negotiables</a>
+  <a href="#expectations">What To Expect</a>
+  <a href="#pots-faq">Pots &amp; FAQ</a>
+</nav>
+
+<div class="floating-nav">
+  <a href="varieties.html" class="float-btn float-next">Next: Varieties &rarr;</a>
+  <button class="float-btn float-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" type="button">&uarr; Top</button>
+</div>
+
+<div class="hero" id="top">
   <div class="kicker">Midwest home growers · Real results, not opinions</div>
   <h1>If you want blueberries<br>outside a blueberry area,<br>you can't half-ass it.</h1>
   <p class="thesis">This isn't a promise that anything works if you try hard enough. It's the reality of what does and doesn't, built from time-tested results — not a nice story about how grandma did it. Get the setup right once, and blueberries are about as carefree as fruit gets: fungal resistant, pest-free for almost every home grower, and they'll outlive you.</p>
@@ -485,7 +556,7 @@
   </div>
 </div>
 
-<section class="checker">
+<section class="checker" id="check-area">
   <h2>Step 1 — Check your area</h2>
   <div class="check-card">
     <input type="checkbox" id="c1"><label for="c1">Wild blueberries grow near you</label>
@@ -516,15 +587,18 @@
     <p><strong>Why blueberries specifically, when plenty of other plants grow fine well outside 4.5–5.5?</strong> Most garden plants have root hairs — fine structures on the roots that directly absorb water and nutrients across a fairly forgiving pH range. Blueberries never evolved root hairs at all. They come from marsh and bog environments where nutrients came to the plant rather than the plant seeking them out, so instead they rely almost entirely on a partnership with a specific fungus (ericoid mycorrhizae) that does the nutrient uptake work for them. That fungal partnership only functions in acidic, high-organic-matter conditions — so it's not just that the plant prefers acid, it's that the whole system it depends on for feeding itself shuts down outside that range, with no normal root-hair backup to fall back on the way most other plants have.</p>
     <p>This is exactly why this guide uses peat moss instead of sulfur amendments into native soil: sulfur requires watching for over- or under-application and correct timing to land in this range. Peat moss gets there immediately, with no dosing math to get wrong.</p>
     <p><strong>There's a second, more practical roadblock the sulfur/native-soil approach carries that peat moss sidesteps entirely: getting an accurate starting soil test in the first place.</strong> Sulfur dosing depends on actually knowing the native soil's current pH and buffering capacity — but cheap consumer soil test kits are broadly unreliable: reading a color chart by eye is subjective, correctly mixing the reagents is its own failure point, and expired reagents give a confidently wrong answer with no indication anything's off. A real soil probe is a genuine step up in reliability, but the real, fully accurate answer is still a university/agricultural extension soil test. Unless someone already lives in a rural or farm-connected area, they likely have no idea that service exists or how to access it — extension offices can absolutely tell you the exact sulfur amount needed once a real sample is submitted, but that's one more roadblock standing between deciding to plant and actually starting. Building a known-good medium from scratch with peat moss skips the soil test question entirely — there's no native starting pH to accurately measure in the first place, because the growing medium isn't native soil.</p>
+    <p><strong>There's a third problem, and it's really the one that matters most: timing doesn't match how people actually decide to do this.</strong> A guide that correctly covers the soil test and the sulfur math still has to account for the fact that sulfur takes months to shift native soil pH — meaning the real answer to "when do I start" is "6 to 12 months before you plant." Nobody is planning that far ahead. Someone reading this saw a blueberry bush somewhere and wants to know, right now, whether they can grow one — not whether they could have, if they'd started testing soil last spring. A guide that's only correct for someone who already had a year of lead time isn't really answering the question that got asked. Peat moss works on the timeline people actually have: decide today, build this weekend, plant.</p>
+    <p><strong>Follow this guide and bushes can be in the ground within days. No prior planning required.</strong></p>
     <p><strong>Soil pH specifically is the one thing that genuinely can't afford to be wrong, in a way water and fertilizer amounts aren't.</strong> A plant can survive imperfect watering or a slightly-off feeding schedule — nature and attentive correction can compensate to some real degree, and the plant lives. Soil pH doesn't self-correct, and trying to fix it after the fact, once a bush is already established, is a genuinely bad idea. That's exactly why getting the growing medium right from the start matters more than any other single decision in this guide — it's the one variable with no room to recover from a wrong guess later.</p>
     <p><strong>This isn't the cheapest way to grow blueberries, and that's not being hidden.</strong> It's gardening — there are plenty of legitimate ways to do this, and no claim here that alternatives (native soil, sulfur, a dug hole) are wrong. But peat moss is the one mix that's guaranteed to sit in the correct range from the very start, with no "what if the test was off," no "what if the dose was wrong," no waiting to find out. For someone who wants the most hassle-free, guaranteed approach possible with zero what-ifs along the way, this is that guide.</p>
     <p><strong>Someone reading this will look at a simpler, cheaper method elsewhere and reasonably wonder if all of this is overkill.</strong> That's a fair instinct, and it's worth being honest about what happens next either way. Try the cheaper route, and it might work — or it might not. Either way, that answer takes years to arrive, because that's how long blueberries take to reveal whether a soil decision was right. This guide's approach is workable from day one, with no multi-year wait to find out whether the gamble paid off.</p>
   </section>
 </section>
 
-<section class="rules">
+<section class="rules" id="building-it">
   <h2>Building It — Dimensions & Mix</h2>
   <p class="sub">What to actually do with the materials, not just what to buy</p>
+  <p style="text-align:center; color:var(--ink-soft); font-size:1rem; max-width:620px; margin:0 auto 28px;"><strong>Two required parts, nothing more: peat moss and pine bark.</strong> That's the whole medium. Everything below is just the dimensions and ratios for putting those two things together correctly.</p>
   <div class="rule-grid">
     <div class="rule-tag">
       <div class="tag-label">Root depth</div>
@@ -608,6 +682,8 @@
       <li><strong>Rake the wetted mix into a berm shape</strong> — about 2–3 ft wide, as long as needed for however many bushes you're planting. <strong>Height target: 12–16" after it compresses down</strong>, not before — that's the real number. If it settles below that over time, just add more mix to build it back up. Don't overthink precision: get it somewhere under knee height and you're fine. Some roots will eventually reach into the native soil below — that's not a problem, even though it isn't perfect pH down there.</li>
       <li><strong>Flatten and compress the top.</strong> You're not building a loose, fluffy mound — pack it down so it holds together.</li>
       <li><strong>Dig a hole in the berm the size of the nursery pot.</strong></li>
+      <li><strong>Breaking up the root ball is a widely accepted practice, and there are valid reasons behind it</strong> — mainly to keep roots from staying confined to their original potting-soil pocket in compacted native soil. For most plants, especially trees with a real tap root, that's genuinely the right call — a tap root left to circle inside its original pot shape can become a lasting structural problem long after planting. Blueberries are the exception to that norm, not the rule: no tap root, just fine fibrous roots, and the concern breaking up the root ball solves elsewhere is already covered here by the loose peat/pine bark medium and correct drip line or soaker hose placement at the root zone. Not trying to talk anyone out of it either way — personal practice here is to not break up root balls on blueberries specifically. <strong>If breaking it up is preferred, just be careful:</strong> these fine roots are easy to damage, a newly transplanted bush doesn't always handle that added stress well, and if it's also being planted outside the ideal window (see the earlier timing note), that's a second stress stacking on top of the first for a plant that doesn't handle stress well to begin with.</li>
+      <li><strong>Plant at the same depth it was growing in the nursery pot — no deeper.</strong> The top of the root ball should sit level with the surrounding medium, not buried under it.</li>
       <li><strong>Set the bush in, compress the sides, and fill any air pockets</strong> around the roots — watering it in right away helps settle everything into place.</li>
       <li><strong>Top-dress with pine bark mulch</strong> — the bag you set aside earlier. That's it, it's ready.</li>
     </ol>
@@ -619,7 +695,7 @@
   </section>
 </section>
 
-<section class="rules">
+<section class="rules" id="non-negotiables">
   <h2>The Non-Negotiables</h2>
   <p class="sub">This is the whole list. Get these right and they mostly take care of themselves — no constant spraying, no babying. Pest pressure varies a lot by region: beetles are the main issue in some areas, spotted wing drosophila in others where it's spread, something else elsewhere. If something on your bush looks off, look up what's actually common in your area rather than assuming the worst — most of what you'll see turns out to be cosmetic, but check locally instead of guessing. The single best tool you have: go look at your bush every few days. You'll learn what normal looks like fast, and when something's actually wrong, it becomes obvious by comparison.</p>
   <div class="rule-grid">
@@ -636,7 +712,7 @@
     <div class="rule-tag">
       <div class="tag-label">Medium</div>
       <h3>Peat Moss</h3>
-      <p>Not sulfur. Peat sits at the right pH immediately — no dosing math, no months-long wait for soil chemistry to shift.</p>
+      <p>Not sulfur. Peat sits at the right pH immediately — no dosing math, no months-long wait for soil chemistry to shift. This matters more here than it would for most plants: blueberries never evolved root hairs and depend entirely on a fungal partnership that only functions in acidic conditions, with no normal backup system to fall back on if the pH is off. Getting the medium right isn't a preference, it's the one input the plant has no way to compensate for on its own.</p>
     </div>
     <div class="rule-tag">
       <div class="tag-label">Mulch</div>
@@ -656,7 +732,7 @@
     <div class="rule-tag">
       <div class="tag-label">Birds</div>
       <h3>Full Netting Only</h3>
-      <p>Scare tape and fake owls do nothing. Full surround netting, or plant more bushes and accept the loss.</p>
+      <p>Scare tape, fake owls, and reflective spinners fail for a specific reason: birds habituate to all of them within days once they realize nothing's actually there. A deterrent that doesn't stay threatening stops working almost immediately. Full surround netting is the only method that removes access entirely rather than relying on birds staying fooled. If netting a whole planting isn't practical, plant more bushes than needed and accept some loss — cheaper and less frustrating than fighting a battle scare tactics can't win.</p>
     </div>
     <div class="rule-tag">
       <div class="tag-label">Weeds</div>
@@ -686,13 +762,13 @@
 
   <section class="honest-note">
     <div class="tag-label">Why Holly-tone specifically, and where to get it</div>
-    <p><strong>Why not just any 4-3-4?</strong> Cost and availability. Holly-tone is cheap and sold everywhere — you won't struggle to find it. Espoma also makes Berry-tone, which is a genuinely good product, but it costs more and is harder to actually find on a shelf. Anything else with similar numbers — we haven't used it ourselves and won't vouch for something we can't personally verify works.</p>
+    <p><strong>Why not just any 4-3-4?</strong> Cost and availability, plus something more important: some very common fertilizer ingredients that are completely fine for most other plants are specifically toxic to blueberries. Confirmed across multiple university extension programs (Florida, Georgia, Michigan State, Oregon State, UConn): chloride-based potassium sources — muriate of potash and magnesium chloride, both cheap and extremely common in general-purpose fertilizers — cause real root damage and injury to blueberries specifically. Nitrate-form nitrogen isn't just less efficient here either; UConn states plainly that "injury may occur" from it, not just underperformance. A first-time grower has no easy way to check a bag's ingredient list for this, which is exactly why naming one specific, verified product is safer advice than "any acid fertilizer will do." Espoma also makes Berry-tone, which is a genuinely good product, but it costs more and is harder to actually find on a shelf. Anything else with similar numbers — we haven't used it ourselves and won't vouch for something we can't personally verify works.</p>
     <p><strong>Where to buy it:</strong> <a href="https://www.homedepot.com/p/Espoma-8-lbs-Organic-Holly-Tone-Fertilizer-100047160/202258530" target="_blank" rel="noopener">Home Depot</a> · <a href="https://www.lowes.com/pd/Espoma-Holly-tone-8-lb-Natural-Tree-Food/3047943" target="_blank" rel="noopener">Lowe's</a> · <a href="https://www.acehardware.com/departments/lawn-and-garden/gardening/plant-food/F011295?variationProductCode=72171" target="_blank" rel="noopener">Ace Hardware</a> · also widely available on Amazon. It really is easy to find.</p>
     <p><strong>A word on Espoma as a company, for what it's worth:</strong> family-owned, making organic plant food since 1929, still manufacturing in the same facility in Millville, NJ — a solar-powered one, by their own account. Holly-tone is a registered Organic Input Material (look up what that actually means if curious), contains real beneficial bacteria (their own guaranteed analysis lists specific colony-forming-unit counts, including Bacillus amyloliquefaciens), and Espoma states no sludges or fillers go into it. Worth reading what the company says about itself directly, not just taking this guide's word for it. This isn't a random product pick — it's what my entire commercial berry operation runs on, not just a homeowner's backyard bush.</p>
   </section>
 </section>
 
-<section class="photos">
+<section class="photos" id="expectations">
   <h2>What to Actually Expect, Year by Year</h2>
   <p class="sub">// Rough estimates, not guarantees — every site varies</p>
   <div class="rule-grid">
@@ -748,7 +824,7 @@
   <p><strong>A properly built system isn't going to be affected by even the poorest quality drinking water.</strong> This is a real, verified result over years on ordinary city water, not a theoretical claim.</p>
 </section>
 
-<section class="pot-warning">
+<section class="pot-warning" id="pots-faq">
   <span class="stamp-label">Do Not</span>
   <h3>What about growing in a pot?</h3>
   <p>Yes, it's technically possible. Yes, it can work. There are even varieties bred specifically to be small enough for it.</p>
@@ -771,5 +847,18 @@
   Built from real, in-ground results. Not a blog. Not a promise.
 </footer>
 
+<script>
+  const navSections = ['top','check-area','building-it','non-negotiables','expectations','pots-faq']
+    .map(id => document.getElementById(id)).filter(Boolean);
+  const navLinks = document.querySelectorAll('.side-nav a');
+  const spyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id));
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px' });
+  navSections.forEach(s => spyObserver.observe(s));
+</script>
 </body>
 </html>

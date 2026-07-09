@@ -539,14 +539,6 @@
     </div>
   </div>
 
-  <div class="zone-tool">
-    <div class="eyebrow">Enter your zip, see what works for you</div>
-    <input type="text" id="zip-input" placeholder="Enter ZIP code" maxlength="5" inputmode="numeric">
-    <button onclick="lookupZip()" type="button">Check</button>
-    <div class="note" id="zip-note" style="display:none; margin-top:10px;"></div>
-    <div class="note">// Zone lookup below is a zip3-prefix approximation, not official USDA precision — mountainous and coastal transition areas can vary within short distances. For an exact reading, check <a href="https://planthardiness.ars.usda.gov/" target="_blank" rel="noopener" style="color:var(--mustard);">the official USDA zone map</a>. No real chill-hour data source exists nationally yet, so this tool doesn't attempt precision there — basic rule of thumb instead: higher zone number generally means lower chill hours, though this can vary by climate type (a maritime coastal zone 7 and a continental zone 7 won't necessarily match). Worth knowing regardless: this matters far less for blueberries than it does for fruit trees like peaches, where getting chill hours wrong is a much bigger deal.</div>
-  </div>
-
   <table class="zone-table">
     <tr><th>USDA Zone</th><th>Recommended Type</th></tr>
     <tr><td class="zone-figure">3</td><td>Half-High only — real, University of Minnesota-bred varieties exist for this, not obscure (Northblue, Northsky, Chippewa, Polaris)</td></tr>
@@ -601,6 +593,14 @@
 <section class="block" id="find-varieties">
   <h2>Find Your Varieties</h2>
   <p class="sub">Filter by what actually matters to you — a wide, growing list, not a complete one (skips old varieties you'll never find for sale)</p>
+
+  <div class="zone-tool">
+    <div class="eyebrow">Enter your zip, see what works for you</div>
+    <input type="text" id="zip-input" placeholder="Enter ZIP code" maxlength="5" inputmode="numeric">
+    <button onclick="lookupZip()" type="button">Check</button>
+    <div class="note" id="zip-note" style="display:none; margin-top:10px;"></div>
+    <div class="note">// Zone lookup below is a zip3-prefix approximation, not official USDA precision — mountainous and coastal transition areas can vary within short distances. For an exact reading, check <a href="https://planthardiness.ars.usda.gov/" target="_blank" rel="noopener" style="color:var(--mustard);">the official USDA zone map</a>. No real chill-hour data source exists nationally yet, so this tool doesn't attempt precision there — basic rule of thumb instead: higher zone number generally means lower chill hours, though this can vary by climate type (a maritime coastal zone 7 and a continental zone 7 won't necessarily match). Worth knowing regardless: this matters far less for blueberries than it does for fruit trees like peaches, where getting chill hours wrong is a much bigger deal.</div>
+  </div>
 
   <div class="filter-panel">
     <div class="filter-group">

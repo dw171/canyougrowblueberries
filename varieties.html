@@ -436,6 +436,63 @@
     border-top: 1px solid var(--rule);
     margin-top: 40px;
   }
+
+  .side-nav {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    z-index: 100;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px 8px;
+    max-width: 150px;
+  }
+  .side-nav a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+    line-height: 1.3;
+    transition: all 0.15s ease;
+  }
+  .side-nav a:hover { background: var(--paper); color: var(--ink); }
+  .side-nav a.active { color: var(--mustard); border-left-color: var(--mustard); font-weight: 600; background: var(--paper); }
+  @media (max-width: 1150px) { .side-nav { display: none; } }
+
+  .floating-nav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .float-btn {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    padding: 10px 18px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    white-space: nowrap;
+  }
+  .float-next { background: var(--ink); color: var(--paper-raised); }
+  .float-top { background: var(--paper-raised); color: var(--ink); border: 1px solid var(--rule); }
 </style>
 </head>
 <body>
@@ -445,13 +502,25 @@
   <a class="back-link" href="index.html">&larr; Back: Can I even do this?</a>
 </header>
 
-<div class="hero">
+<nav class="side-nav" id="side-nav">
+  <a href="#top">Start Here</a>
+  <a href="#zones-chill">Zones &amp; Chill</a>
+  <a href="#decision">The Decision</a>
+  <a href="#find-varieties">Find Varieties</a>
+</nav>
+
+<div class="floating-nav">
+  <a href="index.html" class="float-btn float-next">&larr; Back: Can I Do This?</a>
+  <button class="float-btn float-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" type="button">&uarr; Top</button>
+</div>
+
+<div class="hero" id="top">
   <div class="kicker">Step 2 &middot; You know how — now what do you plant?</div>
   <h1>Which Variety Should I Plant?</h1>
   <p class="thesis">There's no real "best" variety among the common, easy-to-source options. Just two personal preferences to sort out, once you know which type is right for where you live.</p>
 </div>
 
-<section class="block">
+<section class="block" id="zones-chill">
   <h2>Zones &amp; Chill Hours</h2>
   <p class="sub">Two simple checks, easy to overthink</p>
 
@@ -472,10 +541,10 @@
 
   <div class="zone-tool">
     <div class="eyebrow">Enter your zip, see what works for you</div>
-    <input type="text" id="zip-input" placeholder="e.g. 64037" maxlength="5">
-    <button onclick="document.getElementById('zip-note').style.display='block'; document.getElementById('f-zone').scrollIntoView({behavior:'smooth', block:'center'}); document.getElementById('f-zone').focus();">Check</button>
-    <div class="note" id="zip-note" style="display:none; color:var(--mustard); opacity:1; margin-top:10px;">Zip lookup isn't wired up yet — use the zone dropdown below for now, it does the same job.</div>
-    <div class="note">// Real feature, not yet built: zip → USDA zone (solved, USDA publishes zip-to-zone data) + local chill hours (sourceable from extension/NOAA climate data, more complex than zone). Chill hours act as a floor, not a target — a location with MORE chill than a variety needs is fine; only falling BELOW a variety's stated minimum should flag as a mismatch. One secondary note, worth surfacing but not overcomplicating: a low-chill variety planted somewhere with much more chill available satisfies its threshold unusually early in winter — a mid-winter warm spell before true spring can fool it into breaking dormancy prematurely, with flowers then killed by a later real freeze. Same "false spring" mechanism well-known in fruit trees (peaches especially), genuinely less common and less severe in blueberries, but worth a passing mention rather than treating "extra chill available" as risk-free in every direction.</div>
+    <input type="text" id="zip-input" placeholder="Enter ZIP code" maxlength="5" inputmode="numeric">
+    <button onclick="lookupZip()" type="button">Check</button>
+    <div class="note" id="zip-note" style="display:none; margin-top:10px;"></div>
+    <div class="note">// Zone lookup below is a zip3-prefix approximation, not official USDA precision — mountainous and coastal transition areas can vary within short distances. For an exact reading, check <a href="https://planthardiness.ars.usda.gov/" target="_blank" rel="noopener" style="color:var(--mustard);">the official USDA zone map</a>. No real chill-hour data source exists nationally yet, so this tool doesn't attempt precision there — basic rule of thumb instead: higher zone number generally means lower chill hours, though this can vary by climate type (a maritime coastal zone 7 and a continental zone 7 won't necessarily match). Worth knowing regardless: this matters far less for blueberries than it does for fruit trees like peaches, where getting chill hours wrong is a much bigger deal.</div>
   </div>
 
   <table class="zone-table">
@@ -506,32 +575,32 @@
   </div>
 </section>
 
-<section class="block">
+<section class="block" id="decision">
   <h2>The Actual Decision</h2>
   <p class="sub">Simpler than it sounds</p>
   <div class="decision-grid">
     <div class="decision-card">
       <span class="stamp-label">When do you want to pick?</span>
-      <p>Earlier = cooler weather, less pest pressure. Later = more heat and bugs for often smaller berries — not worth it for most home growers.</p>
+      <p>Earlier = cooler weather, less pest pressure. Later = more heat and bugs to deal with while picking — not worth it for most home growers. Berry size is a variety trait, not a season one; plenty of late-season varieties are just as large as early ones.</p>
     </div>
     <div class="decision-card">
       <span class="stamp-label">What berry size do you prefer?</span>
       <p>Minor variety-to-variety differences; most common varieties taste fine. Medium/large is the common default most people want.</p>
     </div>
   </div>
-  <p style="text-align:center; color:var(--ink-soft); font-size:0.9rem; margin-top:16px;">Exception: pink varieties taste notably different from standard blue — but they're still not recommended, per the earlier warning.</p>
 
   <div class="honest-note">
     <div class="tag-label">Pollination — required info, varies by type</div>
     <p><strong>Northern Highbush (and Half-High): optional, but ideal.</strong> Self-fertile — a single variety alone will fruit fine. A second variety boosts yield and berry size 30-40%, and is basically free to add since NHB varieties all bloom within about a week of each other regardless of when they ripen. No strict compatibility rules like fruit trees have.</p>
     <p><strong>Rabbiteye: required, not optional.</strong> Effectively self-sterile — a single rabbiteye variety planted alone will bloom but largely won't set fruit. Two or more different rabbiteye varieties with overlapping bloom times are a real requirement here, not a yield bonus.</p>
     <p><strong>Southern Highbush: required for most varieties, with a few named exceptions.</strong> Unlike NHB, SHB self-fertility is cultivar-dependent, not a given. Most SHB varieties need a partner just like rabbiteye does. <strong>Sunshine Blue, O'Neal, and Sharpblue are confirmed partially self-fertile</strong>, though even these still produce better with a second variety. Sunshine Blue is the most consistently easy of the three — some of the others' zone/hardiness claims are more contested and depend on active care (frost protection during bloom, etc.) than Sunshine Blue's.</p>
+    <p><strong>How pollination actually happens, and the one thing outside your control.</strong> Blueberries aren't wind-pollinated — the pollen is too heavy and sticky. It takes an insect. Bumblebees and a few native specialist bees are especially good at it thanks to "buzz pollination" (vibrating the flower to shake pollen loose), something honeybees can't technically do — though honeybees still manage it well enough that they're what most commercial farms actually rely on. The real risk for a home grower isn't which bee shows up, it's whether any pollinator is active during the bloom window at all — bees of every kind forage less in cold, windy, or overcast weather, and a stretch of bad weather right at bloom time can mean poor fruit set even on a self-fertile variety that's otherwise doing everything right.</p>
   </div>
 </section>
 
-<section class="block">
+<section class="block" id="find-varieties">
   <h2>Find Your Varieties</h2>
-  <p class="sub">Filter by what actually matters to you — comprehensive, not exhaustive (skips old varieties you'll never find for sale)</p>
+  <p class="sub">Filter by what actually matters to you — a wide, growing list, not a complete one (skips old varieties you'll never find for sale)</p>
 
   <div class="filter-panel">
     <div class="filter-group">
@@ -566,6 +635,7 @@
       <label>Berry Size</label>
       <select id="f-berry">
         <option value="all">Any</option>
+        <option value="Small">Small</option>
         <option value="Medium">Medium</option>
         <option value="Large">Large</option>
         <option value="Very Large">Very Large</option>
@@ -587,7 +657,7 @@
   <table class="variety-table" id="variety-table">
     <thead>
       <tr>
-        <th>Variety</th><th>Type</th><th>Zone</th><th>Chill Hrs</th><th>Season</th><th>Berry Size</th><th>Bush Size</th><th>Pollination</th><th>Notes</th>
+        <th>Variety</th><th>Type</th><th>Zone</th><th>Chill Hrs</th><th>Season</th><th>Berry Size</th><th>Bush Size</th><th>Self-Pollinating</th><th>Notes</th>
       </tr>
     </thead>
     <tbody id="variety-tbody"></tbody>
@@ -612,60 +682,174 @@
   </div>
 
 <script>
+// Zip3-prefix to USDA zone approximation. Broad-strokes accuracy, not
+// official USDA precision — mountainous/coastal transition areas vary
+// within short distances. Ranges ordered by first-3-digit zip prefix.
+function zipToZone(zip) {
+  const z = parseInt(zip.substring(0, 3), 10);
+  if (isNaN(z)) return null;
+  const ranges = [
+    [0, 9, 6],      // PR/VI, tropical — closest fit in our range
+    [10, 27, 6],    // MA/RI/NH/ME southern
+    [28, 38, 4],    // VT/NH/ME northern
+    [39, 49, 4],    // ME
+    [50, 54, 5],    // MA western
+    [55, 59, 4],    // VT
+    [60, 69, 6],    // CT
+    [70, 89, 7],    // NJ
+    [100, 149, 6],  // NY (avg — NYC warmer, upstate colder)
+    [150, 196, 6],  // PA
+    [197, 199, 7],  // DE
+    [200, 219, 7],  // DC/MD
+    [220, 246, 7],  // VA
+    [247, 268, 6],  // WV
+    [270, 289, 7],  // NC
+    [290, 299, 8],  // SC
+    [300, 319, 8],  // GA
+    [320, 349, 9],  // FL
+    [350, 369, 7],  // AL
+    [370, 385, 7],  // TN
+    [386, 397, 8],  // MS
+    [398, 399, 8],  // GA coastal
+    [400, 427, 6],  // KY
+    [430, 459, 6],  // OH
+    [460, 479, 6],  // IN
+    [480, 499, 5],  // MI
+    [500, 528, 5],  // IA
+    [530, 549, 4],  // WI
+    [550, 567, 4],  // MN
+    [570, 577, 4],  // SD
+    [580, 588, 3],  // ND
+    [590, 599, 4],  // MT
+    [600, 629, 5],  // IL
+    [630, 658, 6],  // MO
+    [660, 679, 6],  // KS
+    [680, 693, 5],  // NE
+    [700, 714, 8],  // LA
+    [716, 729, 7],  // AR
+    [730, 749, 7],  // OK
+    [750, 799, 8],  // TX (south/central skew — huge state, real range 6-9)
+    [800, 816, 5],  // CO
+    [820, 831, 4],  // WY
+    [832, 838, 5],  // ID
+    [840, 847, 6],  // UT
+    [850, 865, 8],  // AZ (south skew — real range 5-10)
+    [870, 884, 6],  // NM
+    [885, 885, 7],  // TX far west
+    [889, 898, 6],  // NV
+    [900, 961, 9],  // CA (huge range, coast/south skew — real range 6-10)
+    [967, 968, 10], // HI — tropical, closest fit
+    [970, 979, 7],  // OR
+    [980, 994, 7],  // WA
+    [995, 999, 4],  // AK — highly variable, southern coastal estimate
+  ];
+  for (const [lo, hi, zone] of ranges) {
+    if (z >= lo && z <= hi) return zone;
+  }
+  return null;
+}
+
+function zoneRecommendation(zone) {
+  if (zone <= 3) return "Half-High only — Northblue, Northsky, Chippewa, Polaris. See the zone 3 caveat below.";
+  if (zone <= 6) return "Northern Highbush — the default recommendation throughout this guide.";
+  if (zone === 7) return "Northern Highbush or Rabbiteye — either works.";
+  if (zone <= 9) return "Rabbiteye (recommended) — Southern Highbush exists but isn't the better home-grower choice.";
+  return "Southern Highbush becomes necessary here — Rabbiteye's own chill minimum stops being reliably met.";
+}
+
+function lookupZip() {
+  const input = document.getElementById('zip-input').value.trim();
+  const noteEl = document.getElementById('zip-note');
+  if (!/^\d{5}$/.test(input)) {
+    noteEl.style.display = 'block';
+    noteEl.style.color = 'var(--fail)';
+    noteEl.textContent = 'Enter a 5-digit ZIP code.';
+    return;
+  }
+  const zone = zipToZone(input);
+  if (zone === null) {
+    noteEl.style.display = 'block';
+    noteEl.style.color = 'var(--fail)';
+    noteEl.textContent = "Couldn't match that ZIP — use the zone dropdown below instead.";
+    return;
+  }
+  noteEl.style.display = 'block';
+  noteEl.style.color = 'var(--mustard)';
+  noteEl.innerHTML = `Approximate zone: <strong>${zone}</strong>. ${zoneRecommendation(zone)}`;
+
+  const zoneSelect = document.getElementById('f-zone');
+  const zoneStr = String(zone);
+  if ([...zoneSelect.options].some(o => o.value === zoneStr)) {
+    zoneSelect.value = zoneStr;
+    render();
+  }
+  document.getElementById('find-varieties').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
 const varieties = [
   // Northern Highbush — self-fertile, cross-pollination optional but boosts yield/size 30-40%
-  {name:"Duke", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Mild, low-acid flavor. Widely available."},
-  {name:"Patriot", type:"NHB", zoneMin:3, zoneMax:7, chill:"1000+", season:"Early", berry:"Large", bush:"Medium", bushFt:"3–4 ft", poll:"Optional", notes:"Very cold-hardy, adaptable to heavier soils."},
-  {name:"Earliblue", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"One of the earliest, very popular."},
-  {name:"Spartan", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Firm, very large, blooms later than most early varieties."},
-  {name:"Collins", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Light blue, excellent quality."},
-  {name:"Hannah's Choice", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"High sugar, firmer/better flavor than Duke."},
-  {name:"Bluecrop", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"The default reference point — most popular variety worldwide."},
-  {name:"Blueray", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"High yields, popular for U-pick."},
-  {name:"Bluejay", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Popular for home growing and U-pick."},
-  {name:"Berkeley", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Firm, stores well, average flavor."},
-  {name:"Toro", type:"NHB", zoneMin:4, zoneMax:8, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Easy to pick, good flavor."},
-  {name:"Reka", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–6 ft", poll:"Optional", notes:"Bred in New Zealand. Vigorous, adapts to wide soil range. Striking burgundy-red fall foliage — a real ornamental bonus on top of the fruit."},
-  {name:"Jersey", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Medium", bushFt:"6 ft", poll:"Optional", notes:"An old, reliable standard."},
-  {name:"Legacy", type:"NHB", zoneMin:4, zoneMax:8, chill:"800", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Firm, sweet, aromatic, stores well."},
-  {name:"Elliot", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"6 ft", poll:"Optional", notes:"Tart, very good shelf life (30–45 days)."},
-  {name:"Coville", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"6 ft", poll:"Optional", notes:"Highly aromatic, tart, very good flavor."},
-  {name:"Darrow", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Excellent flavor, easy to pick."},
-  {name:"Nelson", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Berries stay good on the bush for extended periods."},
-  {name:"Chandler", type:"NHB", zoneMin:4, zoneMax:7, chill:"1000+", season:"Late", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Extremely large berries — pushing quarter-size at peak. Notably long ~6-week harvest window. Prone to splitting if watering is inconsistent and a heavy rain follows a dry stretch — another reason for the daily, steady watering this guide already recommends, not just a size/comfort thing."},
-  {name:"Aurora", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"High yields, firm, excellent shelf life."},
-  {name:"Sweetheart", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Marketed for its \"two harvests\" — a real early-summer crop, then a smaller fall re-flowering if the season stays mild. Important: this is not 2x total yield, just two separate, smaller harvest windows. The autumn crop is a nice bonus, not a doubled berry count."},
-  {name:"Pink Popcorn", type:"NHB", zoneMin:5, zoneMax:8, chill:"800–1000", season:"Early", berry:"Medium", bush:"Compact", bushFt:"5 ft", poll:"Optional", notes:"University of Minnesota release — genuinely Northern Highbush despite the pink color, not Rabbiteye like Pink Lemonade. Unlike Pink Lemonade, no reports of unreliable yield found — sourcing consistently describes it as easy, hardy, self-fertile, and productive (mostly retail-source confirmation, not the same depth of firsthand grower reports as Pink Lemonade). Flavor is generally described as standard blueberry taste — the pink color appears to be the main distinguishing feature here, not a genuinely different flavor like Pink Lemonade has."},
-  {name:"Northland", type:"NHB", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"3–4 ft", poll:"Optional", notes:"Most winter-hardy highbush type."},
-  {name:"Bluegold", type:"NHB", zoneMin:4, zoneMax:8, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Optional", notes:"Highly productive, good for U-pick."},
+  {name:"Duke", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Mild, low-acid flavor. Widely available."},
+  {name:"Patriot", type:"NHB", zoneMin:3, zoneMax:7, chill:"1000+", season:"Early", berry:"Large", bush:"Medium", bushFt:"3–4 ft", poll:"Yes", notes:"Very cold-hardy, adaptable to heavier soils."},
+  {name:"Earliblue", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"One of the earliest, very popular."},
+  {name:"Spartan", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Firm, very large, blooms later than most early varieties."},
+  {name:"Collins", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Light blue, excellent quality."},
+  {name:"Hannah's Choice", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"High sugar, firmer/better flavor than Duke."},
+  {name:"Bluecrop", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"The default reference point — most popular variety worldwide."},
+  {name:"Blueray", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"High yields, popular for U-pick."},
+  {name:"Bluejay", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Popular for home growing and U-pick."},
+  {name:"Berkeley", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Mid", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Firm, stores well, average flavor."},
+  {name:"Toro", type:"NHB", zoneMin:4, zoneMax:8, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Easy to pick, good flavor."},
+  {name:"Reka", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–6 ft", poll:"Yes", notes:"Bred in New Zealand. Vigorous, adapts to wide soil range. Striking burgundy-red fall foliage — a real ornamental bonus on top of the fruit."},
+  {name:"Jersey", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Medium", bushFt:"6 ft", poll:"Yes", notes:"An old, reliable standard."},
+  {name:"Legacy", type:"NHB", zoneMin:4, zoneMax:8, chill:"800", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Firm, sweet, aromatic, stores well."},
+  {name:"Elliot", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"6 ft", poll:"Yes", notes:"Tart, very good shelf life (30–45 days)."},
+  {name:"Coville", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"6 ft", poll:"Yes", notes:"Highly aromatic, tart, very good flavor."},
+  {name:"Darrow", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Excellent flavor, easy to pick."},
+  {name:"Nelson", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Berries stay good on the bush for extended periods."},
+  {name:"Chandler", type:"NHB", zoneMin:4, zoneMax:7, chill:"1000+", season:"Late", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Extremely large berries — pushing quarter-size at peak. Notably long ~6-week harvest window. Prone to splitting if watering is inconsistent and a heavy rain follows a dry stretch — another reason for the daily, steady watering this guide already recommends, not just a size/comfort thing."},
+  {name:"Aurora", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Late", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"High yields, firm, excellent shelf life."},
+  {name:"Sweetheart", type:"NHB", zoneMin:4, zoneMax:7, chill:"800+", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Marketed for its \"two harvests\" — a real early-summer crop, then a smaller fall re-flowering if the season stays mild. Important: this is not 2x total yield, just two separate, smaller harvest windows. The autumn crop is a nice bonus, not a doubled berry count."},
+  {name:"Pink Popcorn", type:"NHB", zoneMin:5, zoneMax:8, chill:"800–1000", season:"Early", berry:"Medium", bush:"Compact", bushFt:"5 ft", poll:"Yes", notes:"University of Minnesota release — genuinely Northern Highbush despite the pink color, not Rabbiteye like Pink Lemonade. Unlike Pink Lemonade, no reports of unreliable yield found — sourcing consistently describes it as easy, hardy, self-fertile, and productive (mostly retail-source confirmation, not the same depth of firsthand grower reports as Pink Lemonade). Flavor is generally described as standard blueberry taste — the pink color appears to be the main distinguishing feature here, not a genuinely different flavor like Pink Lemonade has."},
+  {name:"Northland", type:"NHB", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"3–4 ft", poll:"Yes", notes:"Most winter-hardy highbush type."},
+  {name:"Liberty", type:"NHB", zoneMin:4, zoneMax:7, chill:"800–1000", season:"Late", berry:"Large", bush:"Large", bushFt:"6–8 ft", poll:"Partial", notes:"Michigan State release (2004), cross of Brigitta and Elliott. Very late bloom and harvest — ripens after most other NHB varieties are done, extending the season further than Elliot alone."},
+  {name:"Top Shelf", type:"NHB", zoneMin:6, zoneMax:8, chill:"700–1000", season:"Mid", berry:"Very Large", bush:"Medium", bushFt:"5–6 ft", poll:"Partial", notes:"Bred specifically for jumbo dessert-quality berries with a spicy, floral flavor note."},
+  {name:"Ka-Bluey", type:"NHB", zoneMin:4, zoneMax:8, chill:"800+ (estimated, not published)", season:"Late", berry:"Medium", bush:"Medium", bushFt:"4–6 ft", poll:"Partial", notes:"Small-to-medium berries with a notably crisp texture, flavor described as having hints of peach and strawberry. Heavy July yields — 11–14 pints from a mature plant per the retailer's own figures."},
+  {name:"Mini Blues", type:"NHB", zoneMin:4, zoneMax:8, chill:"800+ (estimated, not published)", season:"Mid", berry:"Small", bush:"Medium", bushFt:"5–6 ft", poll:"Partial", notes:"A real specialty niche — deliberately tiny, uniform, stemless berries (0.8–1 gram) bred for baking and snacking, not typical fresh eating. Intense flavor concentrated in the skin relative to size."},
+  {name:"Bluegold", type:"NHB", zoneMin:4, zoneMax:8, chill:"800+", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Yes", notes:"Highly productive, good for U-pick."},
   // Half-High (University of Minnesota program — the real zone 3 answer) — pollination behaves like NHB
-  {name:"Northblue", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Early", berry:"Large", bush:"Compact", bushFt:"2–3 ft", poll:"Optional", notes:"Large, dark, firm berries. Hardy to about -35°F; low stature lets snow cover protect buds."},
-  {name:"Northsky", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"1–1.5 ft", poll:"Optional", notes:"The most cold-hardy blueberry that exists — survives down to about -45°F. Dwarf, dense, low mound."},
-  {name:"Northcountry", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Early", berry:"Medium", bush:"Compact", bushFt:"3 ft", poll:"Optional", notes:"Sweet, wild-blueberry-like flavor. Compact, ornamental habit."},
-  {name:"Chippewa", type:"HH", zoneMin:3, zoneMax:8, chill:"800–1000", season:"Mid", berry:"Large", bush:"Compact", bushFt:"3–4 ft", poll:"Optional", notes:"Largest-fruited of the half-highs. Confirmed hardy to zone 2b in Canadian sources."},
-  {name:"Polaris", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"2–4 ft", poll:"Optional", notes:"Ripens about a week before Northblue. Very firm, highly aromatic, tolerates -40°F to -30°F."},
-  {name:"St. Cloud", type:"HH", zoneMin:4, zoneMax:7, chill:"800", season:"Late", berry:"Large", bush:"Compact", bushFt:"3–4 ft", poll:"Optional", notes:"Large, aromatic, slightly tart. The least cold-hardy of this group — zone 3b/4, not true zone 3."},
+  {name:"Northblue", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Early", berry:"Large", bush:"Compact", bushFt:"2–3 ft", poll:"Yes", notes:"Large, dark, firm berries. Hardy to about -35°F; low stature lets snow cover protect buds."},
+  {name:"Northsky", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"1–1.5 ft", poll:"Yes", notes:"The most cold-hardy blueberry that exists — survives down to about -45°F. Dwarf, dense, low mound."},
+  {name:"Northcountry", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Early", berry:"Medium", bush:"Compact", bushFt:"3 ft", poll:"Yes", notes:"Sweet, wild-blueberry-like flavor. Compact, ornamental habit."},
+  {name:"Chippewa", type:"HH", zoneMin:3, zoneMax:8, chill:"800–1000", season:"Mid", berry:"Large", bush:"Compact", bushFt:"3–4 ft", poll:"Yes", notes:"Largest-fruited of the half-highs. Confirmed hardy to zone 2b in Canadian sources."},
+  {name:"Polaris", type:"HH", zoneMin:3, zoneMax:7, chill:"800–1000", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"2–4 ft", poll:"Yes", notes:"Ripens about a week before Northblue. Very firm, highly aromatic, tolerates -40°F to -30°F."},
+  {name:"St. Cloud", type:"HH", zoneMin:4, zoneMax:7, chill:"800", season:"Late", berry:"Large", bush:"Compact", bushFt:"3–4 ft", poll:"Yes", notes:"Large, aromatic, slightly tart. The least cold-hardy of this group — zone 3b/4, not true zone 3."},
   // Rabbiteye — pollination genuinely required, not just beneficial (effectively self-sterile)
-  {name:"Premier", type:"RE", zoneMin:7, zoneMax:9, chill:"550", season:"Early", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Vigorous, disease resistant, productive."},
-  {name:"Climax", type:"RE", zoneMin:7, zoneMax:9, chill:"400–450", season:"Early", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Very reliable in the Deep South."},
-  {name:"Krewer", type:"RE", zoneMin:6, zoneMax:9, chill:"400–450", season:"Early", berry:"Very Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"UGA release, one of the earliest-ripening rabbiteye. Bred as Titan's companion pollinator. Very large berries — same splitting risk as Titan/Chandler if watering isn't kept consistent."},
-  {name:"Brightwell", type:"RE", zoneMin:7, zoneMax:9, chill:"350–400", season:"Mid", berry:"Medium", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Vigorous, produces many new canes. Extended bloom time makes it a strong universal pollinator for other rabbiteye."},
-  {name:"Austin", type:"RE", zoneMin:7, zoneMax:9, chill:"500–550", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Firm, good flavor."},
-  {name:"Alapaha", type:"RE", zoneMin:7, zoneMax:9, chill:"500–550", season:"Mid", berry:"Medium", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Good flavor, smaller seeds than most rabbiteye."},
-  {name:"Powderblue", type:"RE", zoneMin:7, zoneMax:9, chill:"550–650", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Disease resistant, holds up well to rain."},
-  {name:"Tifblue", type:"RE", zoneMin:5, zoneMax:9, chill:"600–700", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Most productive rabbiteye, very firm, popular default."},
-  {name:"Titan", type:"RE", zoneMin:6, zoneMax:9, chill:"500–550", season:"Late", berry:"Very Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"Exceptionally large berries, low seed content for a rabbiteye. Needs consistent water to avoid splitting — larger berries are more prone to it, especially after a dry stretch followed by heavy rain. Another reason daily, steady watering matters, not just a size/comfort preference."},
-  {name:"Ochlockonee", type:"RE", zoneMin:7, zoneMax:9, chill:"650–700", season:"Late", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"Required", notes:"High yields, late season."},
-  {name:"Pink Lemonade", type:"RE", zoneMin:7, zoneMax:9, chill:"300", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"4–5 ft", poll:"Required", notes:"Pink-fruited rabbiteye hybrid. Confirmed via real grower reports, not just industry caution: yield is often dramatically lower than standard varieties — accounts range from a single handful of berries per year off a mature 6 ft bush to going years without fruiting at all, even on an otherwise healthy-looking plant. When it does produce, the flavor is genuinely distinctive — sweet, mild, with real citrus/lemon notes, unlike typical blueberry flavor, confirmed across independent sources. Worth growing for the experience, but don't plan on it as a dependable producer."},
+  {name:"Premier", type:"RE", zoneMin:7, zoneMax:9, chill:"550", season:"Early", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Vigorous, disease resistant, productive."},
+  {name:"Climax", type:"RE", zoneMin:7, zoneMax:9, chill:"400–450", season:"Early", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Very reliable in the Deep South."},
+  {name:"Krewer", type:"RE", zoneMin:6, zoneMax:9, chill:"400–450", season:"Early", berry:"Very Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"UGA release, one of the earliest-ripening rabbiteye. Bred as Titan's companion pollinator. Very large berries — same splitting risk as Titan/Chandler if watering isn't kept consistent."},
+  {name:"Brightwell", type:"RE", zoneMin:7, zoneMax:9, chill:"350–400", season:"Mid", berry:"Medium", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Vigorous, produces many new canes. Extended bloom time makes it a strong universal pollinator for other rabbiteye."},
+  {name:"Austin", type:"RE", zoneMin:7, zoneMax:9, chill:"500–550", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Firm, good flavor."},
+  {name:"Alapaha", type:"RE", zoneMin:7, zoneMax:9, chill:"500–550", season:"Mid", berry:"Medium", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Good flavor, smaller seeds than most rabbiteye."},
+  {name:"Powderblue", type:"RE", zoneMin:7, zoneMax:9, chill:"550–650", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Disease resistant, holds up well to rain."},
+  {name:"Tifblue", type:"RE", zoneMin:5, zoneMax:9, chill:"600–700", season:"Mid", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Most productive rabbiteye, very firm, popular default."},
+  {name:"Titan", type:"RE", zoneMin:6, zoneMax:9, chill:"500–550", season:"Late", berry:"Very Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Exceptionally large berries, low seed content for a rabbiteye. Needs consistent water to avoid splitting — larger berries are more prone to it, especially after a dry stretch followed by heavy rain. Another reason daily, steady watering matters, not just a size/comfort preference."},
+  {name:"Ochlockonee", type:"RE", zoneMin:7, zoneMax:9, chill:"650–700", season:"Late", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"High yields, late season."},
+  {name:"Beckyblue", type:"RE", zoneMin:7, zoneMax:9, chill:"300–400", season:"Early", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Early-ripening (late May–June), heavy producer, vibrant red fall foliage."},
+  {name:"Vernon", type:"RE", zoneMin:7, zoneMax:9, chill:"450", season:"Early", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"UGA patented release. Flowers a week after Climax but actually ripens before both Climax and Premier. Excellent firmness, flavor, and color. Alapaha is the commonly recommended pollinator pairing."},
+  {name:"Baldwin", type:"RE", zoneMin:7, zoneMax:9, chill:"500", season:"Late", berry:"Large", bush:"Large", bushFt:"6–10 ft", poll:"No", notes:"Georgia release (1985). Firm dark blue fruit with a lengthy ripening period — specifically well-suited to pick-your-own and backyard plantings."},
+  {name:"Pink Lemonade", type:"RE", zoneMin:7, zoneMax:9, chill:"300", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"4–5 ft", poll:"No", notes:"Pink-fruited rabbiteye hybrid. Confirmed via real grower reports, not just industry caution: yield is often dramatically lower than standard varieties — accounts range from a single handful of berries per year off a mature 6 ft bush to going years without fruiting at all, even on an otherwise healthy-looking plant. When it does produce, the flavor is genuinely distinctive — sweet, mild, with real citrus/lemon notes, unlike typical blueberry flavor, confirmed across independent sources. Worth growing for the experience, but don't plan on it as a dependable producer."},
   // Southern Highbush — cultivar-dependent; most require a partner, Sunshine Blue and Sharpblue are the partial-self-fertile exceptions
   {name:"O'Neal", type:"SHB", zoneMin:6, zoneMax:9, chill:"200–300", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Partial", notes:"Most productive early SHB, and partially self-fertile like Sunshine Blue and Sharpblue. Real success reported as low as zone 5/6 with frost protection during bloom. Like most SHB, the risk in cooler zones isn't survival — it's inconsistent fruiting, since SHB blooms very early and repeated late frosts damage the flowers before fruit can set. The plant itself is usually fine; the flowers are what's vulnerable."},
+  {name:"Jewel", type:"SHB", zoneMin:7, zoneMax:10, chill:"250", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"No", notes:"UF release (1998). Blooms extremely early. Excellent stem scar and firmness, good slightly tart flavor. Moderately vigorous, upright, high-yielding. One of the go-to choices for extreme low-chill areas."},
   {name:"Sunshine Blue", type:"SHB", zoneMin:6, zoneMax:9, chill:"150", season:"Mid", berry:"Medium", bush:"Compact", bushFt:"3–4 ft", poll:"Partial", notes:"The easiest SHB to grow, consistently — multiple dedicated sources confirm zone 6 hardiness without caveat (unlike some other SHB zone-5/6 claims, which come with real conditions attached). Partially self-fertile, same as O'Neal and Sharpblue. Also tolerates slightly higher pH than most varieties."},
-  {name:"Misty", type:"SHB", zoneMin:5, zoneMax:10, chill:"300", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–6 ft", poll:"Required", notes:"Reliable low-chill performer."},
-  {name:"Star", type:"SHB", zoneMin:7, zoneMax:10, chill:"400", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Required", notes:"Good flavor, early ripening."},
+  {name:"Sweetcrisp", type:"SHB", zoneMin:7, zoneMax:10, chill:"200–300", season:"Early", berry:"Large", bush:"Medium", bushFt:"4–6 ft", poll:"No", notes:"UF release, known specifically for an unusually crisp texture and intense sweetness — a real flavor difference, not just marketing. Some sources claim under 100 chill hours; more commonly cited at 200–300."},
+  {name:"Indigocrisp", type:"SHB", zoneMin:7, zoneMax:10, chill:"300", season:"Mid", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"No", notes:"UF release, similar bloom timing to Farthing and Star. Very firm, crisp texture, mild sweet flavor from low acidity."},
+  {name:"Misty", type:"SHB", zoneMin:5, zoneMax:10, chill:"300", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–6 ft", poll:"No", notes:"Reliable low-chill performer."},
+  {name:"Star", type:"SHB", zoneMin:7, zoneMax:10, chill:"400", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"No", notes:"Good flavor, early ripening."},
   {name:"Sharpblue", type:"SHB", zoneMin:7, zoneMax:10, chill:"200", season:"Early", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Partial", notes:"Very low chill requirement, developed by U. Florida. One of three SHB varieties confirmed partially self-fertile, alongside Sunshine Blue and O'Neal."},
-  {name:"Emerald", type:"SHB", zoneMin:7, zoneMax:10, chill:"250", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"Required", notes:"Most popular, most frequently planted SHB."},
-  {name:"Jubilee", type:"SHB", zoneMin:5, zoneMax:9, chill:"400–500", season:"Mid", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"Required", notes:"Reliable mid-season performer."},
-  {name:"Biloxi", type:"SHB", zoneMin:6, zoneMax:9, chill:"300–400", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–5 ft", poll:"Required", notes:"Does well in the Deep South, Texas, and California."},
+  {name:"Emerald", type:"SHB", zoneMin:7, zoneMax:10, chill:"250", season:"Early", berry:"Large", bush:"Medium", bushFt:"5–6 ft", poll:"No", notes:"Most popular, most frequently planted SHB."},
+  {name:"Jubilee", type:"SHB", zoneMin:5, zoneMax:9, chill:"400–500", season:"Mid", berry:"Medium", bush:"Medium", bushFt:"5–6 ft", poll:"No", notes:"Reliable mid-season performer."},
+  {name:"Biloxi", type:"SHB", zoneMin:6, zoneMax:9, chill:"300–400", season:"Early", berry:"Medium", bush:"Medium", bushFt:"4–5 ft", poll:"No", notes:"Does well in the Deep South, Texas, and California."},
 ];
 
 function inZone(v, zone) {
@@ -734,5 +918,18 @@ render();
   Built from real, in-ground results. Not a blog. Not a promise.
 </footer>
 
+<script>
+  const navSections2 = ['top','zones-chill','decision','find-varieties']
+    .map(id => document.getElementById(id)).filter(Boolean);
+  const navLinks2 = document.querySelectorAll('.side-nav a');
+  const spyObserver2 = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks2.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id));
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px' });
+  navSections2.forEach(s => spyObserver2.observe(s));
+</script>
 </body>
 </html>
